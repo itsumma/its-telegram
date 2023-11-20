@@ -1378,6 +1378,7 @@ class Some2 extends Some<Dialog> {
     // let loadCount = windowSize.height / 72 * 1.25 | 0;
     // ITS <=
     let offsetIndex = 0;
+    console.log(loadCount);
 
     const doNotRenderChatList = appDialogsManager.doNotRenderChatList; // cache before awaits
 
