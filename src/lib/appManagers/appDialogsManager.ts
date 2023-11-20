@@ -1378,8 +1378,13 @@ class Some2 extends Some<Dialog> {
     // let loadCount = windowSize.height / 72 * 1.25 | 0;
     // ITS <=
     let offsetIndex = 0;
+    console.log('AAAAAAA');
+    console.log('AAAAAAA');
+    console.log('AAAAAAA');
+    console.log('AAAAAAA');
+    console.log('AAAAAAA');
     console.log(loadCount);
-
+    console.log(side);
     const doNotRenderChatList = appDialogsManager.doNotRenderChatList; // cache before awaits
 
     const {index: currentOffsetIndex} = this.getOffsetIndex(side);
