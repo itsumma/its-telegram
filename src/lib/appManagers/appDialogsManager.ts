@@ -3309,8 +3309,14 @@ export class AppDialogsManager {
     if(isPinned && !isUnread && !isMention) {
       dom.unreadBadge.classList.add('badge-icon', 'dialog-pinned-icon');
       dom.unreadBadge.replaceChildren(Icon('chatspinned'));
+      // ITS => BASE VIEW
+      dom.listEl.classList.add('is-pinned');
+      // ITS <=
     } else if(dom.unreadBadge) {
       dom.unreadBadge.classList.remove('badge-icon', 'dialog-pinned-icon');
+      // ITS => BASE VIEW
+      dom.listEl.classList.remove('is-pinned');
+      // ITS <=
       if(!unreadBadgeText) {
         dom.unreadBadge.replaceChildren();
       }
