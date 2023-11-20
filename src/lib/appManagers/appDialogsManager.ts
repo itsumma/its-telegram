@@ -225,7 +225,10 @@ class SortedDialogList extends SortedList<SortedDialog> {
 const avatarSizeMap: {[k in DialogElementSize]?: number} = {
   bigger: 54,
   abitbigger: 42,
-  small: 32
+  small: 32,
+  // ITS => compact view
+  its: 30
+  // ITS <=
 };
 
 export type DialogElementSize = RowMediaSizeType;
@@ -355,6 +358,11 @@ export class DialogElement extends Row {
     } else if(avatarSize === 'small') {
       this.container.classList.add('row-small');
     }
+    // ITS => compact view
+    else if(avatarSize === 'its') {
+      this.container.classList.add('row-its')
+    }
+    // ITS <=
 
     li.dataset.peerId = '' + peerId;
     if(threadId) {
@@ -1203,7 +1211,11 @@ class Some3 extends Some<ForumTopic> {
 
   public async loadDialogsInner(side: SliceSides) {
     const {indexKey} = this;
-    let loadCount = windowSize.height / 64 * 1.25 | 0;
+    // ITS => compact view
+    const chatHeight = 64;
+    let loadCount = windowSize.height / chatHeight * 1.25 | 0;
+    // let loadCount = windowSize.height / 64 * 1.25 | 0;
+    // ITS <=
     let offsetIndex = 0;
 
     const filterId = this.peerId;
@@ -1360,7 +1372,11 @@ class Some2 extends Some<Dialog> {
 
   public async loadDialogsInner(side: SliceSides) {
     const {filterId, indexKey} = this;
-    let loadCount = windowSize.height / 72 * 1.25 | 0;
+    // ITS => compact view
+    const chatHeight = 72;
+    let loadCount = windowSize.height / chatHeight * 1.25 | 0;
+    // let loadCount = windowSize.height / 72 * 1.25 | 0;
+    // ITS <=
     let offsetIndex = 0;
 
     const doNotRenderChatList = appDialogsManager.doNotRenderChatList; // cache before awaits
@@ -3427,7 +3443,10 @@ export class AppDialogsManager {
   public addDialogNew(options: DialogElementOptions & {container?: HTMLElement | Scrollable | false, append?: boolean}) {
     const d = new DialogElement({
       autonomous: !!options.container,
+      // ITS => compact view
       avatarSize: 'bigger',
+      // avatarSize: 'bigger',
+      // ITS <=
       ...options
       // avatarSize: !options.avatarSize || options.avatarSize >= 54 ? 'bigger' : 'abitbigger',
     });
