@@ -778,10 +778,16 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
 
       fastRafConventional(() => {
         const selector = '.chatlist-chat';
+        // ITS => compact view
+        const saveLength = 30;
+        // ITS <=
         const viewportSlice = getViewportSlice({
           overflowElement: this.scrollable.container,
           selector,
-          extraMinLength: 10
+          // ITS => compact view
+          // extraMinLength: 10
+          extraMinLength: saveLength
+          // ITS <=
         });
 
         const visible = viewportSlice.visible;
@@ -3453,7 +3459,7 @@ export class AppDialogsManager {
     const d = new DialogElement({
       autonomous: !!options.container,
       // ITS => compact view
-      avatarSize: 'bigger',
+      avatarSize: 'its',
       // avatarSize: 'bigger',
       // ITS <=
       ...options
