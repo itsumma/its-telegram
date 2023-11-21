@@ -308,7 +308,10 @@ export class DialogElement extends Row {
     const avatarEl = avatar?.node;
     if(avatarEl) {
       avatarEl.classList.add('dialog-avatar');
-      this.applyMediaElement(avatarEl, avatarSize);
+      // ITS => compact view
+      this.applyMediaElementToStart(avatarEl, avatarSize);
+      // this.applyMediaElement(avatarEl, avatarSize);
+      // ITS <=
     }
 
     const captionDiv = this.container;
@@ -379,6 +382,10 @@ export class DialogElement extends Row {
     rightSpan.classList.add('dialog-title-details');
     rightSpan.append(statusSpan, lastTimeSpan);
 
+    // ITS => compact view
+    rightSpan.classList.add('__hidden');
+    // ITS <=
+
     this.subtitleRow.classList.add('dialog-subtitle');
 
     const dom: DialogDom = this.dom = {
@@ -422,7 +429,10 @@ export class DialogElement extends Row {
     if(this.dom.unreadBadge) return;
     const badge = this.dom.unreadBadge = document.createElement('div');
     badge.className = `dialog-subtitle-badge badge badge-${BADGE_SIZE}`;
-    this.dom.subtitleEl.append(badge);
+    // ITS => compact view
+    // this.dom.subtitleEl.append(badge);
+    this.dom.listEl.append(badge);
+    // ITS <=
   }
 
   public createUnreadAvatarBadge() {
@@ -437,7 +447,10 @@ export class DialogElement extends Row {
     const badge = this.dom.mentionsBadge = document.createElement('div');
     badge.className = `dialog-subtitle-badge badge badge-${BADGE_SIZE} mention mention-badge`;
     badge.innerText = '@';
-    this.dom.lastMessageSpan.after(badge);
+    // ITS => compact view
+    // this.dom.lastMessageSpan.after(badge);
+    this.dom.listEl.append(badge);
+    // ITS <=
   }
 
   public toggleBadgeByKey(
@@ -1384,13 +1397,6 @@ class Some2 extends Some<Dialog> {
     // let loadCount = windowSize.height / 72 * 1.25 | 0;
     // ITS <=
     let offsetIndex = 0;
-    console.log('AAAAAAA');
-    console.log('AAAAAAA');
-    console.log('AAAAAAA');
-    console.log('AAAAAAA');
-    console.log('AAAAAAA');
-    console.log(loadCount);
-    console.log(side);
     const doNotRenderChatList = appDialogsManager.doNotRenderChatList; // cache before awaits
 
     const {index: currentOffsetIndex} = this.getOffsetIndex(side);

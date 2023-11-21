@@ -343,6 +343,22 @@ export default class Row<T extends SliderSuperTabEventableConstructable = any> {
     return media;
   }
 
+  // ITS => compact view
+  public applyMediaElementToStart(media: HTMLElement, size?: RowMediaSizeType) {
+    this.container.classList.add('row-with-padding');
+
+    this.media = media;
+    media.classList.add('row-media');
+
+    if(size) {
+      media.classList.add('row-media-' + size);
+    }
+    this.container.prepend(media);
+
+    return media;
+  }
+  // ITS <=
+
   public isDisabled() {
     return this.container.classList.contains('is-disabled');
   }
