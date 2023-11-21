@@ -24,7 +24,7 @@ const handlebarsPlugin = handlebars({
 const serverOptions: ServerOptions = {
   https: false,
   // host: '192.168.92.78',
-  port: 8080
+  port: 9090
 };
 
 const NO_MINIFY = false;
