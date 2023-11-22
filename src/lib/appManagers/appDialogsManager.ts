@@ -191,7 +191,7 @@ class SortedDialogList extends SortedList<SortedDialog> {
       onElementCreate: async(base) => {
         const loadPromises: Promise<any>[] = [];
 
-        const dialogElement = appDialogsManager.addListDialog({
+        const dialogElement = await appDialogsManager.addListDialog({
           peerId: this.forumPeerId ?? base.id,
           loadPromises,
           isBatch: true,
@@ -247,6 +247,10 @@ type DialogElementOptions = {
   isMainList?: boolean,
   withStories?: boolean,
   controlled?: boolean
+  // ITS => compact view
+  isChannel?: boolean;
+  isGroup?: boolean;
+  // ITS <=
 };
 export class DialogElement extends Row {
   public dom: DialogDom;
@@ -266,7 +270,9 @@ export class DialogElement extends Row {
     wrapOptions = {},
     isMainList,
     withStories,
-    controlled
+    controlled,
+    isChannel = false,
+    isGroup = false
   }: DialogElementOptions) {
     super({
       clickable: true,
@@ -320,6 +326,14 @@ export class DialogElement extends Row {
     titleSpanContainer.classList.add('user-title');
 
     this.titleRow.classList.add('dialog-title');
+
+    // ITS => compact view
+    if(isGroup) {
+      const groupLabel = document.createElement('span');
+      groupLabel.classList.add('tgico', 'tgico-group');
+      titleSpanContainer.append(groupLabel);
+    }
+    // ITS <=
 
     const peerTitle = new PeerTitle();
     const peerTitlePromise = peerTitle.update({
@@ -3388,12 +3402,19 @@ export class AppDialogsManager {
     return dialog as Dialog | ForumTopic;
   }
 
-  public addListDialog(options: Parameters<AppDialogsManager['addDialogNew']>[0] & {isBatch?: boolean}) {
+  public async addListDialog(options: Parameters<AppDialogsManager['addDialogNew']>[0] & {isBatch?: boolean}) {
     options.autonomous = false;
     options.withStories = true;
-
+    // ITS => compact view
+    const [_isChannel, _isGroup] = await Promise.all([
+      this.managers.appPeersManager.isBroadcast(options.peerId),
+      this.managers.appPeersManager.isAnyGroup(options.peerId)
+    ]);
+    options.isChannel = _isChannel;
+    options.isGroup = _isGroup;
+    // ITS <=
     const ret = this.addDialogNew(options);
-
+    console.log(ret);
     if(ret) {
       const {peerId} = options;
       const getDialogPromise = this.getDialog(peerId, options.threadId);
