@@ -382,10 +382,6 @@ export class DialogElement extends Row {
     rightSpan.classList.add('dialog-title-details');
     rightSpan.append(statusSpan, lastTimeSpan);
 
-    // ITS => compact view
-    rightSpan.classList.add('__hidden');
-    // ITS <=
-
     this.subtitleRow.classList.add('dialog-subtitle');
 
     const dom: DialogDom = this.dom = {
