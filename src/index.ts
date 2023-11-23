@@ -334,6 +334,20 @@ import {IS_OVERLAY_SCROLL_SUPPORTED, USE_CUSTOM_SCROLL, USE_NATIVE_SCROLL} from 
 
   console.log('got state, time:', performance.now() - perf);
 
+  // ITS => state
+  try {
+    const [itsStateManager] = await Promise.all([
+      import('./its/managers/appITSStateManager')
+    ]);
+    await itsStateManager.default.initState();
+
+    const isCompact = itsStateManager.default.getSettingFromCache('compactViewEnabled', false);
+    document.documentElement.classList.toggle('its-compact', isCompact);
+  } catch(e) {
+    console.error(e);
+  }
+  // ITS <=
+
   if(langPack.lang_code === 'ar' && IS_BETA && false) {
     document.body.classList.add('is-rtl');
     document.documentElement.dir = 'rtl';
