@@ -64,6 +64,11 @@ import getAttachMenuBotIcon from '../../lib/appManagers/utils/attachMenuBots/get
 import wrapEmojiText from '../../lib/richTextProcessor/wrapEmojiText';
 import flatten from '../../helpers/array/flatten';
 
+// ITS =>
+import ItsSettingsCheckBox from '../../its/components/itsSettingsCheckBox';
+// ITS <=
+
+
 export const LEFT_COLUMN_ACTIVE_CLASSNAME = 'is-left-column-shown';
 
 export class AppSidebarLeft extends SidebarSlider {
@@ -146,6 +151,14 @@ export class AppSidebarLeft extends SidebarSlider {
       themeCheckboxField.setValueSilently(themeController.getTheme().name === 'night');
     });
 
+    // ITS =>
+    // compact view
+    const compactViewField = new ItsSettingsCheckBox({
+      toggle: true,
+      settingsKey: 'compactViewEnabled'
+    }) as CheckboxField;
+    // ITS <=
+
     const menuButtons: (ButtonMenuItemOptions & {verify?: () => boolean | Promise<boolean>})[] = [{
       icon: 'savedmessages',
       text: 'SavedMessages',
@@ -206,7 +219,16 @@ export class AppSidebarLeft extends SidebarSlider {
         this.createTab(AppPowerSavingTab).open();
       },
       verify: () => liteMode.isEnabled()
-    }, {
+    },
+    // ITS =>
+    {
+      icon: 'eye1',
+      text: 'ITS.CompactView',
+      onClick: () => {},
+      checkboxField: compactViewField
+    },
+    // ITS <=
+    {
       icon: 'help',
       text: 'TelegramFeatures',
       onClick: () => {

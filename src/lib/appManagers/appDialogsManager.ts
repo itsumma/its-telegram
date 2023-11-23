@@ -3419,7 +3419,6 @@ export class AppDialogsManager {
     options.isGroup = _isGroup;
     // ITS <=
     const ret = this.addDialogNew(options);
-    console.log(ret);
     if(ret) {
       const {peerId} = options;
       const getDialogPromise = this.getDialog(peerId, options.threadId);

@@ -20,6 +20,10 @@ import matchUrlProtocol from './richTextProcessor/matchUrlProtocol';
 import wrapUrl from './richTextProcessor/wrapUrl';
 import {setDirection} from '../helpers/dom/setInnerHTML';
 
+// ITS =>
+import langIts from '../its/lang';
+// ITS <=
+
 export const langPack: {[actionType: string]: LangPackKey} = {
   'messageActionChatCreate': 'ActionCreateGroup',
   'messageActionChatCreateYou': 'ActionYouCreateGroup',
@@ -70,7 +74,10 @@ export const langPack: {[actionType: string]: LangPackKey} = {
   'messageActionBotAllowed': 'Chat.Service.BotPermissionAllowed'
 };
 
-export type LangPackKey = /* string |  */keyof typeof lang | keyof typeof langSign;
+// ITS =>
+// export type LangPackKey = /* string |  */keyof typeof lang | keyof typeof langSign;
+// ITS <=
+export type LangPackKey = /* string |  */keyof typeof lang | keyof typeof langSign | keyof typeof langIts;
 
 export type FormatterArgument = string | number | Node | FormatterArgument[];
 export type FormatterArguments = FormatterArgument[];
@@ -169,11 +176,20 @@ namespace I18n {
     return Promise.all([
       import('../lang'),
       import('../langSign'),
+      // ITS =>
+      import('../its/lang'),
+      // ITS <=
       import('../countries')
-    ]).then(([lang, langSign, countries]) => {
+    // ITS =>
+    // ]).then(([lang, langSign, countries]) => {
+    ]).then(([lang, langSign, langIts, countries]) => {
+    // ITS <=
       const strings: LangPackString[] = [];
       formatLocalStrings(lang.default, strings);
       formatLocalStrings(langSign.default, strings);
+      // ITS =>
+      formatLocalStrings(langIts.default, strings);
+      // ITS <=
 
       const langPack: LangPackDifference = {
         _: 'langPackDifference',
@@ -203,6 +219,9 @@ namespace I18n {
       }),
       import('../lang'),
       import('../langSign'),
+      // ITS =>
+      import('../its/lang'),
+      // ITS <=
       managers.apiManager.invokeApiCacheable('help.getCountriesList', {
         lang_code: langCode,
         hash: 0
@@ -243,10 +262,16 @@ namespace I18n {
 
   export function getLangPack(langCode: string, web?: boolean) {
     setLangCode(langCode);
-    return loadLangPack(langCode, web).then(([langPack1, langPack2, localLangPack1, localLangPack2, countries, _]) => {
+    // ITS =>
+    // return loadLangPack(langCode, web).then(([langPack1, langPack2, localLangPack1, localLangPack2, countries, _]) => {
+    return loadLangPack(langCode, web).then(([langPack1, langPack2, localLangPack1, localLangPack2, localLangPack3, countries, _]) => {
+    // ITS <=
       let strings: LangPackString[] = [];
 
-      [localLangPack1, localLangPack2].forEach((l) => {
+      // ITS =>
+      // [localLangPack1, localLangPack2].forEach((l) => {
+      [localLangPack1, localLangPack2, localLangPack3].forEach((l) => {
+      // ITS <=
         formatLocalStrings(l.default as any, strings);
       });
 

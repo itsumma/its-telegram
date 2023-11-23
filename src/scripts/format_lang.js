@@ -15,7 +15,11 @@ const f = (key, value, plural) => {
 
 let out = '';
 
-['lang', 'langSign'].forEach(part => {
+// ITS =>
+// ['lang', 'langSign'].forEach(part => {
+['lang', 'langSign', 'its/lang'].forEach(part => {
+// ITS <=
+
   const path = `../${part}.ts`;
 
   let str = fs.readFileSync(path).toString()
