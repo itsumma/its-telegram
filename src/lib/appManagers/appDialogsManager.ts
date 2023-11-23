@@ -111,6 +111,11 @@ import Icon from '../../components/icon';
 import setBadgeContent from '../../helpers/setBadgeContent';
 import createBadge from '../../helpers/createBadge';
 
+// ITS =>
+import appITSStateManager from '../../its/managers/appITSStateManager';
+// ITS <=
+
+
 export const DIALOG_LIST_ELEMENT_TAG = 'A';
 
 export type DialogDom = {
@@ -807,7 +812,8 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
       fastRafConventional(() => {
         const selector = '.chatlist-chat';
         // ITS => compact view
-        const saveLength = 30;
+        const isCompact = appITSStateManager.getSettingFromCache('compactViewEnabled');
+        const saveLength = isCompact ? 30 : 19;
         // ITS <=
         const viewportSlice = getViewportSlice({
           overflowElement: this.scrollable.container,
@@ -1246,7 +1252,8 @@ class Some3 extends Some<ForumTopic> {
   public async loadDialogsInner(side: SliceSides) {
     const {indexKey} = this;
     // ITS => compact view
-    const chatHeight = 64;
+    const isCompact = appITSStateManager.getSettingFromCache('compactViewEnabled');
+    const chatHeight = isCompact ? 26 : 40;
     let loadCount = windowSize.height / chatHeight * 1.25 | 0;
     // let loadCount = windowSize.height / 64 * 1.25 | 0;
     // ITS <=
@@ -1407,7 +1414,8 @@ class Some2 extends Some<Dialog> {
   public async loadDialogsInner(side: SliceSides) {
     const {filterId, indexKey} = this;
     // ITS => compact view
-    const chatHeight = 72;
+    const isCompact = appITSStateManager.getSettingFromCache('compactViewEnabled');
+    const chatHeight = isCompact ? 26 : 40;
     let loadCount = windowSize.height / chatHeight * 1.25 | 0;
     // let loadCount = windowSize.height / 72 * 1.25 | 0;
     // ITS <=

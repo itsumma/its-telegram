@@ -34,7 +34,7 @@ const setContent = (element: HTMLElement, content: K) => {
 
 // ITS => compact view
 // export type RowMediaSizeType = 'small' | 'medium' | 'big' | 'abitbigger' | 'bigger';
-export type RowMediaSizeType = 'small' | 'medium' | 'big' | 'abitbigger' | 'bigger' | 'its';
+export type RowMediaSizeType = 'small' | 'medium' | 'big' | 'abitbigger' | 'bigger' | 'its' | 'itscompact';
 // ITS <=
 
 type ConstructorP<T> = T extends {
