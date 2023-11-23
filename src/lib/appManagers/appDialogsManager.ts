@@ -329,9 +329,14 @@ export class DialogElement extends Row {
 
     // ITS => compact view
     if(isGroup) {
-      const groupLabel = document.createElement('span');
-      groupLabel.classList.add('tgico', 'tgico-group');
+      const groupLabel = Icon('group');
+      groupLabel.classList.add('tgico-offset');
       titleSpanContainer.append(groupLabel);
+    }
+    if(isChannel) {
+      const channelLabel = Icon('channel');
+      channelLabel.classList.add('tgico-offset');
+      titleSpanContainer.append(channelLabel);
     }
     // ITS <=
 
