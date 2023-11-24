@@ -241,7 +241,10 @@ export class AppSidebarLeft extends SidebarSlider {
       onClick: () => {
         const url = I18n.format('TelegramFeaturesUrl', true);
         appImManager.openUrl(url);
-      }
+      },
+      // ITS => compact view
+      verify: () => false
+      // ITS <=
     }, {
       icon: 'bug',
       text: 'ReportBug',
@@ -254,7 +257,10 @@ export class AppSidebarLeft extends SidebarSlider {
         setTimeout(() => {
           a.remove();
         }, 0);
-      }
+      },
+      // ITS => compact view
+      verify: () => false
+      // ITS <=
     }, {
       icon: 'char' as Icon,
       className: 'a',
@@ -267,7 +273,10 @@ export class AppSidebarLeft extends SidebarSlider {
           location.href = 'https://web.telegram.org/a/';
         });
       },
-      verify: () => App.isMainDomain
+      // ITS =>
+      // verify: () => App.isMainDomain
+      verify: () => false
+      // ITS <=
     }, /* {
       icon: 'char w',
       text: 'ChatList.Menu.SwitchTo.Webogram',
@@ -284,7 +293,10 @@ export class AppSidebarLeft extends SidebarSlider {
         const installPrompt = getInstallPrompt();
         installPrompt?.();
       },
-      verify: () => !!getInstallPrompt()
+      // ITS =>
+      // verify: () => !!getInstallPrompt()
+      verify: () => false
+      // ITS <=
     }];
 
     const filteredButtons = menuButtons.filter(Boolean);
@@ -321,7 +333,10 @@ export class AppSidebarLeft extends SidebarSlider {
       },
       onOpen: (e, btnMenu) => {
         const btnMenuFooter = document.createElement('a');
-        btnMenuFooter.href = 'https://github.com/morethanwords/tweb/blob/master/CHANGELOG.md';
+        // ITS =>
+        // btnMenuFooter.href = 'https://github.com/morethanwords/tweb/blob/master/CHANGELOG.md';
+        btnMenuFooter.href = 'https://youtu.be/JpxxqFeF-G0';
+        // ITS <=
         btnMenuFooter.target = '_blank';
         btnMenuFooter.rel = 'noopener noreferrer';
         btnMenuFooter.classList.add('btn-menu-footer');
@@ -331,7 +346,10 @@ export class AppSidebarLeft extends SidebarSlider {
         });
         const t = document.createElement('span');
         t.classList.add('btn-menu-footer-text');
-        t.textContent = 'Telegram Web' + App.suffix + ' '/* ' alpha ' */ + App.versionFull;
+        // ITS =>
+        // t.textContent = 'Telegram Web' + App.suffix + ' '/* ' alpha ' */ + App.versionFull;
+        t.textContent = 'Мэйк Телега грейт эгейн. vol 2. Атака клонов';
+        // ITS <=
         btnMenuFooter.append(t);
         btnMenu.classList.add('has-footer');
         btnMenu.append(btnMenuFooter);
