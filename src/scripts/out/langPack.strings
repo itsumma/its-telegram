@@ -1870,3 +1870,5 @@
 "PHONE_CODE_EXPIRED" = "Code expired";
 "PASSWORD_HASH_INVALID" = "Incorrect password";
 "ITS.CompactView" = "Compact View";
+"ITS.Settings" = "ITS Settings";
+"ITS.View" = "View configuration";
