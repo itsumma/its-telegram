@@ -113,6 +113,7 @@ import createBadge from '../../helpers/createBadge';
 
 // ITS =>
 import appITSStateManager from '../../its/managers/appITSStateManager';
+import appITSManager from '../../its/managers/appITSManager';
 // ITS <=
 
 
@@ -2179,6 +2180,12 @@ export class AppDialogsManager {
     this.managers.appNotificationsManager.getNotifyPeerTypeSettings();
 
     await (await m(loadDialogsPromise)).renderPromise.catch(noop);
+
+    // ITS => dialog props
+    const _dialogs = await this.managers.dialogsStorage.getCachedDialogs(false);
+    await appITSManager.initDialogs(_dialogs);
+    // ITS <=
+
     this.managers.appMessagesManager.fillConversations();
   }
 
