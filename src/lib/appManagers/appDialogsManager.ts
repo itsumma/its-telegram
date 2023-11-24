@@ -256,6 +256,7 @@ type DialogElementOptions = {
   // ITS => compact view
   isChannel?: boolean;
   isGroup?: boolean;
+  isTechsupport?: boolean;
   // ITS <=
 };
 export class DialogElement extends Row {
@@ -277,8 +278,11 @@ export class DialogElement extends Row {
     isMainList,
     withStories,
     controlled,
+    // ITS => dialog props
     isChannel = false,
-    isGroup = false
+    isGroup = false,
+    isTechsupport = false
+    // ITS <=
   }: DialogElementOptions) {
     super({
       clickable: true,
@@ -344,6 +348,12 @@ export class DialogElement extends Row {
       channelLabel.classList.add('tgico-offset');
       titleSpanContainer.append(channelLabel);
     }
+
+    const techsupportLabel = Icon('settings');
+    techsupportLabel.classList.add('tgico-offset');
+    techsupportLabel.style.display = isTechsupport ? 'block' : 'none';
+    titleSpanContainer.append(techsupportLabel);
+
     // ITS <=
 
     const peerTitle = new PeerTitle();
@@ -3426,12 +3436,14 @@ export class AppDialogsManager {
     options.autonomous = false;
     options.withStories = true;
     // ITS => compact view
-    const [_isChannel, _isGroup] = await Promise.all([
+    const [_isChannel, _isGroup, _isTechsupport] = await Promise.all([
       this.managers.appPeersManager.isBroadcast(options.peerId),
-      this.managers.appPeersManager.isAnyGroup(options.peerId)
+      this.managers.appPeersManager.isAnyGroup(options.peerId),
+      appITSManager.isTechsupportDialog(options.peerId)
     ]);
     options.isChannel = _isChannel;
     options.isGroup = _isGroup;
+    options.isTechsupport = _isTechsupport;
     // ITS <=
     const ret = this.addDialogNew(options);
     if(ret) {
