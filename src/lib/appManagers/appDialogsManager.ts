@@ -350,7 +350,7 @@ export class DialogElement extends Row {
     }
 
     const techsupportLabel = Icon('settings');
-    techsupportLabel.classList.add('tgico-offset');
+    techsupportLabel.classList.add('tgico-offset', 'its-ts-icon');
     techsupportLabel.style.display = isTechsupport ? 'block' : 'none';
     titleSpanContainer.append(techsupportLabel);
 
@@ -1412,6 +1412,18 @@ class Some2 extends Some<Dialog> {
         }
       }
     });
+
+    // ITS =>
+    appITSManager.addEventListener('its_dialog_ts_status_changed', (dialogProps) => {
+      const dom = this.getDialogDom(dialogProps.peerId);
+      if(!dom)
+        return;
+
+      const tsIco = dom.titleSpanContainer.querySelector<HTMLElement>('span.its-ts-icon');
+      if(tsIco)
+        tsIco.style.display = dialogProps.techsupport ? 'block' : 'none';
+    });
+    // ITS <=
   }
 
   private get isActive() {

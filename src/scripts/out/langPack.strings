@@ -1872,3 +1872,5 @@
 "ITS.CompactView" = "Compact View";
 "ITS.Settings" = "ITS Settings";
 "ITS.View" = "View configuration";
+"ITS.SetTechsupport" = "Set techsupport";
+"ITS.UnsetTechsupport" = "Unset techsupport";

@@ -22,6 +22,10 @@ import PopupElement from './popups';
 import cancelEvent from '../helpers/dom/cancelEvent';
 import IS_SHARED_WORKER_SUPPORTED from '../environment/sharedWorkerSupport';
 
+// ITS =>
+import appITSManager from '../its/managers/appITSManager';
+// ITS <=
+
 export default class DialogsContextMenu {
   private buttons: ButtonMenuItemOptionsVerifiable[];
 
@@ -139,7 +143,38 @@ export default class DialogsContextMenu {
       text: 'Unarchive',
       onClick: this.onArchiveClick,
       verify: () => this.filterId === FOLDER_ID_ARCHIVE && this.peerId !== rootScope.myId
-    }, {
+    },
+    // ITS => techsupport
+    {
+      icon: 'settings',
+      text: 'ITS.SetTechsupport',
+      onClick: () => {
+        appITSManager.setTechsupportStatus(this.dialog.peerId, true)
+      },
+      verify: async() => {
+        const [_isAnyGroup, isTechsupport] = await Promise.all([
+          this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
+          appITSManager.isTechsupportDialog(this.dialog.peerId)
+        ]);
+        return _isAnyGroup && !isTechsupport;
+      }
+    },
+    {
+      icon: 'settings',
+      text: 'ITS.UnsetTechsupport',
+      onClick: () => {
+        appITSManager.setTechsupportStatus(this.dialog.peerId, false)
+      },
+      verify: async() => {
+        const [_isAnyGroup, isTechsupport] = await Promise.all([
+          this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
+          appITSManager.isTechsupportDialog(this.dialog.peerId)
+        ]);
+        return _isAnyGroup && isTechsupport;
+      }
+    },
+    // ITS <=
+    {
       icon: 'hide',
       text: 'Hide',
       onClick: this.onHideTopicClick,
