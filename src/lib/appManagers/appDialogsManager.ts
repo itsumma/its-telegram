@@ -782,6 +782,9 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
   }
 
   public updateDialog(dialog: T) {
+    // ITS =>
+    appITSManager.updateDialog(dialog as Dialog);
+    // ITS <=
     const key = this.getDialogKey(dialog);
     if(this.isDialogMustBeInViewport(dialog)) {
       if(!this.sortedList.has(key) && this.loadedDialogsAtLeastOnce) {
