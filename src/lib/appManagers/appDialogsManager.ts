@@ -2157,6 +2157,11 @@ export class AppDialogsManager {
       addFiltersPromise = this.managers.filtersStorage.getDialogFilters().then(addFilters);
     }
 
+    // ITS => dialog props
+    const _dialogs = await this.managers.dialogsStorage.getCachedDialogs(false);
+    await appITSManager.initDialogs(_dialogs);
+    // ITS <=
+
     this.doNotRenderChatList = true;
     const loadDialogsPromise = this.xd.onChatsScroll();
     const m = middlewarePromise(middleware);
@@ -2190,11 +2195,6 @@ export class AppDialogsManager {
     this.managers.appNotificationsManager.getNotifyPeerTypeSettings();
 
     await (await m(loadDialogsPromise)).renderPromise.catch(noop);
-
-    // ITS => dialog props
-    const _dialogs = await this.managers.dialogsStorage.getCachedDialogs(false);
-    await appITSManager.initDialogs(_dialogs);
-    // ITS <=
 
     this.managers.appMessagesManager.fillConversations();
   }
