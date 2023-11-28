@@ -1874,3 +1874,5 @@
 "ITS.View" = "View configuration";
 "ITS.SetTechsupport" = "Set techsupport";
 "ITS.UnsetTechsupport" = "Unset techsupport";
+"ITS.SetFavourite" = "Mark as favourite";
+"ITS.UnsetFavourite" = "Unmark as favourite";
