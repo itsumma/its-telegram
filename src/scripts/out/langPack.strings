@@ -1876,3 +1876,6 @@
 "ITS.UnsetTechsupport" = "Unset techsupport";
 "ITS.SetFavourite" = "Mark as favourite";
 "ITS.UnsetFavourite" = "Unmark as favourite";
+"ITS.MissedTSDialogsEnabled" = "Enabled Missed TS";
+"ITS.MissedChats" = "Missed chats";
+"ITS.MissedTSDialogsEnabledShort" = "Enabled";

@@ -73,7 +73,7 @@ export default class DialogsContextMenu {
   }
 
   private getButtons() {
-    return this.buttons ??= [{
+    /* ITS =>  {
       icon: 'newtab',
       text: 'OpenInNewTab',
       onClick: (e) => {
@@ -81,7 +81,8 @@ export default class DialogsContextMenu {
         cancelEvent(e);
       },
       verify: () => IS_SHARED_WORKER_SUPPORTED
-    }, {
+    }, ITS <= */
+    return this.buttons ??= [{
       icon: 'unread',
       text: 'MarkAsUnread',
       onClick: this.onUnreadClick,

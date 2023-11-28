@@ -159,9 +159,18 @@ export class AppSidebarLeft extends SidebarSlider {
       settingsKey: 'compactViewEnabled'
     }) as CheckboxField;
 
+    const missedTSEnabledField = new ItsSettingsCheckBox({
+      toggle: true,
+      settingsKey: 'missedTSDialogsActive'
+    }) as CheckboxField;
+
     appITSStateManager.addEventListener('its_settings_changed', (args : ITSSettingsChangedOptions) => {
       if(args.name === 'compactViewEnabled') {
         compactViewField.setValueSilently(args.value);
+      }
+
+      if(args.name === 'missedTSDialogsActive') {
+        missedTSEnabledField.setValueSilently(args.value);
       }
     });
     // ITS <=
@@ -233,6 +242,12 @@ export class AppSidebarLeft extends SidebarSlider {
       text: 'ITS.CompactView',
       onClick: () => {},
       checkboxField: compactViewField
+    },
+    {
+      icon: 'eye1',
+      text: 'ITS.MissedTSDialogsEnabled',
+      onClick: () => {},
+      checkboxField: missedTSEnabledField
     },
     // ITS <=
     {
