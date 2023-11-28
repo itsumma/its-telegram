@@ -1879,3 +1879,6 @@
 "ITS.MissedTSDialogsEnabled" = "Enabled Missed TS";
 "ITS.MissedChats" = "Missed chats";
 "ITS.MissedTSDialogsEnabledShort" = "Enabled";
+"ITS.MissedChatsVariants.5Min" = "5 min";
+"ITS.MissedChatsVariants.10Min" = "10 min";
+"ITS.MissedChatsVariants.15Min" = "15 min";
