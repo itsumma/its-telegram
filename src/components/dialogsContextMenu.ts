@@ -119,7 +119,26 @@ export default class DialogsContextMenu {
           !!this.dialog.pFlags?.pinned;
         return isPinned;
       }
-    }, {
+    },
+    // ITS => favourites
+    {
+      icon: 'flag',
+      text: 'ITS.SetFavourite',
+      onClick: () => {
+        appITSManager.setFavoriteStatus(this.dialog.peerId, true);
+      },
+      verify: async() => !await appITSManager.isFavouriteDialog(this.dialog.peerId)
+    },
+    {
+      icon: 'flag',
+      text: 'ITS.UnsetFavourite',
+      onClick: () => {
+        appITSManager.setFavoriteStatus(this.dialog.peerId, false);
+      },
+      verify: async() => appITSManager.isFavouriteDialog(this.dialog.peerId)
+    },
+    // ITS <=
+    {
       icon: 'mute',
       text: 'ChatList.Context.Mute',
       onClick: this.onMuteClick,

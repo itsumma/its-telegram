@@ -257,6 +257,7 @@ type DialogElementOptions = {
   isChannel?: boolean;
   isGroup?: boolean;
   isTechsupport?: boolean;
+  isFavourite?: boolean;
   // ITS <=
 };
 export class DialogElement extends Row {
@@ -281,7 +282,8 @@ export class DialogElement extends Row {
     // ITS => dialog props
     isChannel = false,
     isGroup = false,
-    isTechsupport = false
+    isTechsupport = false,
+    isFavourite = false
     // ITS <=
   }: DialogElementOptions) {
     super({
@@ -353,6 +355,11 @@ export class DialogElement extends Row {
     techsupportLabel.classList.add('tgico-offset', 'its-ts-icon');
     techsupportLabel.style.display = isTechsupport ? 'block' : 'none';
     titleSpanContainer.append(techsupportLabel);
+
+    const favouriteLabel = Icon('favourites');
+    favouriteLabel.classList.add('tgico-offset', 'its-favour-icon');
+    favouriteLabel.style.display = isFavourite ? 'block' : 'none';
+    titleSpanContainer.append(favouriteLabel);
 
     // ITS <=
 
@@ -1426,6 +1433,16 @@ class Some2 extends Some<Dialog> {
       if(tsIco)
         tsIco.style.display = dialogProps.techsupport ? 'block' : 'none';
     });
+
+    appITSManager.addEventListener('its_dialog_favourite_status_changed', dialogProps => {
+      const dom = this.getDialogDom(dialogProps.peerId);
+      if(!dom)
+        return;
+
+      const fvIco = dom.titleSpanContainer.querySelector<HTMLElement>('span.its-favour-icon');
+      if(fvIco)
+        fvIco.style.display = dialogProps.favourite ? 'block' : 'none';
+    })
     // ITS <=
   }
 
@@ -3451,14 +3468,16 @@ export class AppDialogsManager {
     options.autonomous = false;
     options.withStories = true;
     // ITS => compact view
-    const [_isChannel, _isGroup, _isTechsupport] = await Promise.all([
+    const [_isChannel, _isGroup, _isTechsupport, _isFavourite] = await Promise.all([
       this.managers.appPeersManager.isBroadcast(options.peerId),
       this.managers.appPeersManager.isAnyGroup(options.peerId),
-      appITSManager.isTechsupportDialog(options.peerId)
+      appITSManager.isTechsupportDialog(options.peerId),
+      appITSManager.isFavouriteDialog(options.peerId)
     ]);
     options.isChannel = _isChannel;
     options.isGroup = _isGroup;
     options.isTechsupport = _isTechsupport;
+    options.isFavourite = _isFavourite;
     // ITS <=
     const ret = this.addDialogNew(options);
     if(ret) {
