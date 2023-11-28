@@ -152,11 +152,11 @@ export default class DialogsContextMenu {
         appITSManager.setTechsupportStatus(this.dialog.peerId, true)
       },
       verify: async() => {
-        const [_isAnyGroup, isTechsupport] = await Promise.all([
+        const [isAnyGroup, isTechsupport] = await Promise.all([
           this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
           appITSManager.isTechsupportDialog(this.dialog.peerId)
         ]);
-        return _isAnyGroup && !isTechsupport;
+        return isAnyGroup && !isTechsupport;
       }
     },
     {
@@ -166,11 +166,11 @@ export default class DialogsContextMenu {
         appITSManager.setTechsupportStatus(this.dialog.peerId, false)
       },
       verify: async() => {
-        const [_isAnyGroup, isTechsupport] = await Promise.all([
+        const [isAnyGroup, isTechsupport] = await Promise.all([
           this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
           appITSManager.isTechsupportDialog(this.dialog.peerId)
         ]);
-        return _isAnyGroup && isTechsupport;
+        return isAnyGroup && isTechsupport;
       }
     },
     // ITS <=
