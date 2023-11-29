@@ -258,6 +258,8 @@ type DialogElementOptions = {
   isGroup?: boolean;
   isTechsupport?: boolean;
   isFavourite?: boolean;
+  isMissed?: boolean;
+  isPinned?: boolean;
   // ITS <=
 };
 export class DialogElement extends Row {
@@ -283,7 +285,8 @@ export class DialogElement extends Row {
     isChannel = false,
     isGroup = false,
     isTechsupport = false,
-    isFavourite = false
+    isFavourite = false,
+    isMissed = false
     // ITS <=
   }: DialogElementOptions) {
     super({
@@ -438,6 +441,14 @@ export class DialogElement extends Row {
       listEl: li,
       subtitleEl: this.subtitleRow
     };
+
+    // ITS =>
+    if(isMissed) {
+      this.dom.listEl.classList.add('its-is-missed');
+    } else {
+      this.dom.listEl.classList.remove('its-is-missed');
+    }
+    // ITS <=
 
     // this will never happen for migrated legacy chat
     if(!autonomous) {
@@ -1442,7 +1453,24 @@ class Some2 extends Some<Dialog> {
       const fvIco = dom.titleSpanContainer.querySelector<HTMLElement>('span.its-favour-icon');
       if(fvIco)
         fvIco.style.display = dialogProps.favourite ? 'block' : 'none';
-    })
+    });
+
+    appITSManager.addEventListener('its_dialog_missed_status_changed', async(dialogProps) => {
+      const dialog = await this.managers.appMessagesManager.getDialogOnly(dialogProps.peerId);
+      this.managers.dialogsStorage.saveDialog({dialog: dialog});
+      this.updateDialog(dialog);
+      // TODO INDICATORS
+
+      const isMissedEnabled = appITSStateManager.getSettingFromCache('missedTSDialogsActive');
+      if(!isMissedEnabled)
+        return;
+
+      const dom = this.getDialogDom(dialog.peerId);
+      if(!dom)
+        return;
+
+      dom.listEl.classList.toggle('its-is-missed', dialogProps.missed);
+    });
     // ITS <=
   }
 
@@ -3412,9 +3440,8 @@ export class AppDialogsManager {
       badge.classList.toggle('mention', isMention);
     });
 
-    // ITS => BASE VIEW
-    if(isPinned)
-    {
+    // ITS =>
+    if(isPinned) {
       dom.listEl.classList.add('is-pinned');
     } else {
       dom.listEl.classList.remove('is-pinned');
@@ -3468,16 +3495,16 @@ export class AppDialogsManager {
     options.autonomous = false;
     options.withStories = true;
     // ITS => compact view
-    const [_isChannel, _isGroup, _isTechsupport, _isFavourite] = await Promise.all([
+    const [_isChannel, _isGroup, _isTechsupport] = await Promise.all([
       this.managers.appPeersManager.isBroadcast(options.peerId),
       this.managers.appPeersManager.isAnyGroup(options.peerId),
-      appITSManager.isTechsupportDialog(options.peerId),
-      appITSManager.isFavouriteDialog(options.peerId)
+      appITSManager.isTechsupportDialog(options.peerId)
     ]);
     options.isChannel = _isChannel;
     options.isGroup = _isGroup;
     options.isTechsupport = _isTechsupport;
-    options.isFavourite = _isFavourite;
+    options.isFavourite = appITSManager.isFavouriteDialog(options.peerId);
+    options.isMissed = appITSManager.isMissedDialog(options.peerId);
     // ITS <=
     const ret = this.addDialogNew(options);
     if(ret) {

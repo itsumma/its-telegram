@@ -128,7 +128,7 @@ export default class DialogsContextMenu {
       onClick: () => {
         appITSManager.setFavoriteStatus(this.dialog.peerId, true);
       },
-      verify: async() => !await appITSManager.isFavouriteDialog(this.dialog.peerId)
+      verify: () => !appITSManager.isFavouriteDialog(this.dialog.peerId)
     },
     {
       icon: 'flag',
@@ -136,7 +136,7 @@ export default class DialogsContextMenu {
       onClick: () => {
         appITSManager.setFavoriteStatus(this.dialog.peerId, false);
       },
-      verify: async() => appITSManager.isFavouriteDialog(this.dialog.peerId)
+      verify: () => appITSManager.isFavouriteDialog(this.dialog.peerId)
     },
     // ITS <=
     {
