@@ -3441,11 +3441,7 @@ export class AppDialogsManager {
     });
 
     // ITS =>
-    if(isPinned) {
-      dom.listEl.classList.add('is-pinned');
-    } else {
-      dom.listEl.classList.remove('is-pinned');
-    }
+    dom.listEl.classList.toggle('is-pinned', isPinned);
     // ITS <=
 
     if(isPinned && !isUnread && !isMention) {
