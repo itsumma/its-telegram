@@ -1435,6 +1435,15 @@ class Some2 extends Some<Dialog> {
     });
 
     // ITS =>
+    appITSManager.addEventListener('its_peer_pinned_event', async(args) => {
+      const _isPinned = await this.managers.dialogsStorage.isDialogPinned(args.peerId, args.filterId);
+      const dom = this.getDialogDom(args.peerId);
+      if(!dom)
+        return;
+
+      dom.listEl.classList.toggle('is-pinned', _isPinned);
+    });
+
     appITSManager.addEventListener('its_dialog_ts_status_changed', (dialogProps) => {
       const dom = this.getDialogDom(dialogProps.peerId);
       if(!dom)

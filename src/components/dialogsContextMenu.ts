@@ -263,7 +263,13 @@ export default class DialogsContextMenu {
       peerId,
       filterId,
       topicId: threadId
-    }).catch(async(err: ApiError) => {
+    })
+    // ITS =>
+    .then(() => {
+      appITSManager.dispatchEvent('its_peer_pinned_event', {peerId: peerId, filterId: filterId});
+    })
+    // ITS <=
+    .catch(async(err: ApiError) => {
       if(err.type === 'PINNED_DIALOGS_TOO_MUCH' || err.type === 'PINNED_TOO_MUCH') {
         if(threadId) {
           this.managers.apiManager.getLimit('topicPin').then((limit) => {
