@@ -42,6 +42,7 @@ import callbackify from '../../helpers/callbackify';
 
 // ITS =>
 import appITSManager from '../../its/managers/appITSManager';
+import appITSDBManager from '../../its/managers/appITSDBManager';
 // ITS <=
 
 export type FolderDialog = {
@@ -172,7 +173,7 @@ export default class DialogsStorage extends AppManager {
     return Promise.all([
       this.appStateManager.getState(),
       this.appStoragesManager.loadStorage('dialogs')
-    ]).then(([state, {results: dialogs, storage}]) => {
+    ]).then(async([state, {results: dialogs, storage}]) => {
       this.storage = storage;
       this.dialogs = this.storage.getCache();
 
@@ -185,6 +186,11 @@ export default class DialogsStorage extends AppManager {
         const _order = this.getPinnedOrders(folderId);
         _order.splice(0, _order.length, ...order);
       }
+
+      // ITS => dialog props
+      await appITSDBManager.openDatabase();
+      await this.appITSManager.initDialogs(dialogs);
+      // ITS <=
 
       if(dialogs.length) {
         AppStorage.freezeSaving<typeof DATABASE_STATE>(this.setDialogsFromState.bind(this, dialogs), ['chats', 'dialogs', 'messages', 'users']);
@@ -796,12 +802,10 @@ export default class DialogsStorage extends AppManager {
     let index = this.generateDialogIndex(topDate, isPinned);
     if(!isPinned && !resetIndex) {
       let sorted = false;
-      console.log(index);
-      if(false) {
+      if(this.appITSManager.isFavouriteDialog(dialog.peerId)) {
         index = this.generateFavouriteDialogIndex(dialog.peerId);
         sorted = true;
       }
-      console.log(index);
     }
     // ITS <=
     if(justReturn) {

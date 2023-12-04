@@ -801,7 +801,7 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
 
   public updateDialog(dialog: T) {
     // ITS =>
-    appITSManager.updateDialog(dialog as Dialog);
+    this.managers.appITSManager.updateDialog(dialog as Dialog);
     // ITS <=
     const key = this.getDialogKey(dialog);
     if(this.isDialogMustBeInViewport(dialog)) {
@@ -2226,11 +2226,6 @@ export class AppDialogsManager {
       addFiltersPromise = this.managers.filtersStorage.getDialogFilters().then(addFilters);
     }
 
-    // ITS => dialog props
-    const _dialogs = await this.managers.dialogsStorage.getCachedDialogs(false);
-    await appITSManager.initDialogs(_dialogs);
-    // ITS <=
-
     this.doNotRenderChatList = true;
     const loadDialogsPromise = this.xd.onChatsScroll();
     const m = middlewarePromise(middleware);
@@ -3500,16 +3495,18 @@ export class AppDialogsManager {
     options.autonomous = false;
     options.withStories = true;
     // ITS => compact view
-    const [_isChannel, _isGroup, _isTechsupport] = await Promise.all([
+    const [_isChannel, _isGroup, _isTechsupport, _isFavourite, _isMissed] = await Promise.all([
       this.managers.appPeersManager.isBroadcast(options.peerId),
       this.managers.appPeersManager.isAnyGroup(options.peerId),
-      appITSManager.isTechsupportDialog(options.peerId)
+      this.managers.appITSManager.isTechsupportDialog(options.peerId),
+      this.managers.appITSManager.isFavouriteDialog(options.peerId),
+      this.managers.appITSManager.isMissedDialog(options.peerId)
     ]);
     options.isChannel = _isChannel;
     options.isGroup = _isGroup;
     options.isTechsupport = _isTechsupport;
-    options.isFavourite = appITSManager.isFavouriteDialog(options.peerId);
-    options.isMissed = appITSManager.isMissedDialog(options.peerId);
+    options.isFavourite = _isFavourite;
+    options.isMissed = _isMissed;
     // ITS <=
     const ret = this.addDialogNew(options);
     if(ret) {

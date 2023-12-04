@@ -126,17 +126,23 @@ export default class DialogsContextMenu {
       icon: 'flag',
       text: 'ITS.SetFavourite',
       onClick: () => {
-        appITSManager.setFavoriteStatus(this.dialog.peerId, true);
+        this.managers.appITSManager.setFavoriteStatus(this.dialog.peerId, true);
       },
-      verify: () => !appITSManager.isFavouriteDialog(this.dialog.peerId)
+      verify: async() => {
+        const _isFavourite = await this.managers.appITSManager.isFavouriteDialog(this.dialog.peerId);
+        return !_isFavourite;
+      }
     },
     {
       icon: 'flag',
       text: 'ITS.UnsetFavourite',
       onClick: () => {
-        appITSManager.setFavoriteStatus(this.dialog.peerId, false);
+        this.managers.appITSManager.setFavoriteStatus(this.dialog.peerId, false);
       },
-      verify: () => appITSManager.isFavouriteDialog(this.dialog.peerId)
+      verify: async() => {
+        const _isFavourite = await this.managers.appITSManager.isFavouriteDialog(this.dialog.peerId);
+        return _isFavourite;
+      }
     },
     // ITS <=
     {
@@ -169,12 +175,12 @@ export default class DialogsContextMenu {
       icon: 'settings',
       text: 'ITS.SetTechsupport',
       onClick: () => {
-        appITSManager.setTechsupportStatus(this.dialog.peerId, true)
+        this.managers.appITSManager.setTechsupportStatus(this.dialog.peerId, true)
       },
       verify: async() => {
         const [isAnyGroup, isTechsupport] = await Promise.all([
           this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
-          appITSManager.isTechsupportDialog(this.dialog.peerId)
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId)
         ]);
         return isAnyGroup && !isTechsupport;
       }
@@ -183,12 +189,12 @@ export default class DialogsContextMenu {
       icon: 'settings',
       text: 'ITS.UnsetTechsupport',
       onClick: () => {
-        appITSManager.setTechsupportStatus(this.dialog.peerId, false)
+        this.managers.appITSManager.setTechsupportStatus(this.dialog.peerId, false)
       },
       verify: async() => {
         const [isAnyGroup, isTechsupport] = await Promise.all([
           this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
-          appITSManager.isTechsupportDialog(this.dialog.peerId)
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId)
         ]);
         return isAnyGroup && isTechsupport;
       }
