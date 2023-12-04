@@ -1435,7 +1435,7 @@ class Some2 extends Some<Dialog> {
     });
 
     // ITS =>
-    appITSManager.addEventListener('its_peer_pinned_event', async(args) => {
+    this.listenerSetter.add(rootScope)('its_peer_pinned_event', async(args) => {
       const _isPinned = await this.managers.dialogsStorage.isDialogPinned(args.peerId, args.filterId);
       const dom = this.getDialogDom(args.peerId);
       if(!dom)
@@ -1444,7 +1444,7 @@ class Some2 extends Some<Dialog> {
       dom.listEl.classList.toggle('is-pinned', _isPinned);
     });
 
-    appITSManager.addEventListener('its_dialog_ts_status_changed', (dialogProps) => {
+    this.listenerSetter.add(rootScope)('its_dialog_ts_status_changed', (dialogProps) => {
       const dom = this.getDialogDom(dialogProps.peerId);
       if(!dom)
         return;
@@ -1454,7 +1454,7 @@ class Some2 extends Some<Dialog> {
         tsIco.style.display = dialogProps.techsupport ? 'block' : 'none';
     });
 
-    appITSManager.addEventListener('its_dialog_favourite_status_changed', dialogProps => {
+    this.listenerSetter.add(rootScope)('its_dialog_favourite_status_changed', dialogProps => {
       const dom = this.getDialogDom(dialogProps.peerId);
       if(!dom)
         return;
@@ -1464,7 +1464,7 @@ class Some2 extends Some<Dialog> {
         fvIco.style.display = dialogProps.favourite ? 'block' : 'none';
     });
 
-    appITSManager.addEventListener('its_dialog_missed_status_changed', async(dialogProps) => {
+    this.listenerSetter.add(rootScope)('its_dialog_missed_status_changed', async(dialogProps) => {
       const dialog = await this.managers.appMessagesManager.getDialogOnly(dialogProps.peerId);
       this.managers.dialogsStorage.saveDialog({dialog: dialog});
       this.updateDialog(dialog);

@@ -266,7 +266,7 @@ export default class DialogsContextMenu {
     })
     // ITS =>
     .then(() => {
-      appITSManager.dispatchEvent('its_peer_pinned_event', {peerId: peerId, filterId: filterId});
+      rootScope.dispatchEvent('its_peer_pinned_event', {peerId: peerId, filterId: filterId});
     })
     // ITS <=
     .catch(async(err: ApiError) => {

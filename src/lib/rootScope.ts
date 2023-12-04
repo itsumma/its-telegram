@@ -26,6 +26,11 @@ import {MOUNT_CLASS_TO} from '../config/debug';
 import MTProtoMessagePort from './mtproto/mtprotoMessagePort';
 import {IS_WORKER} from '../helpers/context';
 
+// ITS =>
+import {ITSDialogProps} from '../its/managers/appITSDialogPropsManager';
+import {AppPeerPinnedEvent} from '../its/managers/appITSManager';
+// ITS <=
+
 export type BroadcastEvents = {
   'chat_full_update': ChatId,
   'chat_update': ChatId,
@@ -176,7 +181,15 @@ export type BroadcastEvents = {
   'premium_toggle_private': {isNew: boolean, isPremium: boolean},
 
   'config': Config,
-  'app_config': MTAppConfig
+  'app_config': MTAppConfig,
+
+  // ITS =>
+  'its_dialog_props_changed' : ITSDialogProps,
+  'its_dialog_ts_status_changed': ITSDialogProps,
+  'its_dialog_favourite_status_changed': ITSDialogProps,
+  'its_dialog_missed_status_changed': ITSDialogProps,
+  'its_peer_pinned_event': AppPeerPinnedEvent
+  // ITS <=
 };
 
 export type BroadcastEventsListeners = {

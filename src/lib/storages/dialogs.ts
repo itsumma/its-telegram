@@ -40,6 +40,10 @@ import assumeType from '../../helpers/assumeType';
 import makeError from '../../helpers/makeError';
 import callbackify from '../../helpers/callbackify';
 
+// ITS =>
+import appITSManager from '../../its/managers/appITSManager';
+// ITS <=
+
 export type FolderDialog = {
   dialog: Dialog,
   index: number
@@ -542,6 +546,12 @@ export default class DialogsStorage extends AppManager {
     return (date * 0x10000) + (isPinned ? 0 : (++this.dialogsNum & 0xFFFF));
   }
 
+  // ITS =>
+  public generateFavouriteDialogIndex(peerId: PeerId) {
+    return (0x7ffe0000 * 0x10000) + (peerId & 0x0000FFFF) // ? через peerId или topDate
+  }
+  // ITS <=
+
   // public makeFilterForTopics(id: number): MyDialogFilter {
   //   return {
   //     _: 'dialogFilter',
@@ -738,7 +748,10 @@ export default class DialogsStorage extends AppManager {
     dialog: Dialog | ForumTopic,
     justReturn?: boolean,
     message?: MyMessage,
-    noPinnedOrderUpdate?: boolean
+    noPinnedOrderUpdate?: boolean,
+    // ITS =>
+    resetIndex: boolean = false
+    // ITS <=
   ) {
     if(!justReturn/*  && !isTopic */) {
       return;
@@ -778,7 +791,19 @@ export default class DialogsStorage extends AppManager {
 
     topDate ||= tsNow(true);
 
-    const index = this.generateDialogIndex(topDate, isPinned);
+    // ITS =>
+    // const index = this.generateDialogIndex(topDate, isPinned);
+    let index = this.generateDialogIndex(topDate, isPinned);
+    if(!isPinned && !resetIndex) {
+      let sorted = false;
+      console.log(index);
+      if(false) {
+        index = this.generateFavouriteDialogIndex(dialog.peerId);
+        sorted = true;
+      }
+      console.log(index);
+    }
+    // ITS <=
     if(justReturn) {
       return index;
     }
