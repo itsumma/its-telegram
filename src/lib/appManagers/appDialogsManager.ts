@@ -1454,7 +1454,15 @@ class Some2 extends Some<Dialog> {
         tsIco.style.display = dialogProps.techsupport ? 'block' : 'none';
     });
 
-    this.listenerSetter.add(rootScope)('its_dialog_favourite_status_changed', dialogProps => {
+    this.listenerSetter.add(rootScope)('its_dialog_favourite_status_changed', async(dialogProps) => {
+      const dialog = await this.managers.appMessagesManager.getDialogOnly(dialogProps.peerId);
+      this.managers.dialogsStorage.saveDialog({
+        dialog: dialog,
+        folderId: undefined,
+        ignoreOffsetDate: false
+      });
+      this.updateDialog(dialog);
+
       const dom = this.getDialogDom(dialogProps.peerId);
       if(!dom)
         return;
