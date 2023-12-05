@@ -1882,3 +1882,9 @@
 "ITS.MissedChatsVariants.5Min" = "5 min";
 "ITS.MissedChatsVariants.10Min" = "10 min";
 "ITS.MissedChatsVariants.15Min" = "15 min";
+"ITS.DialogsRotate" = "Dialogs rotate by messages interval";
+"ITS.DialogsRotateVariants.1Sec" = "1 sec";
+"ITS.DialogsRotateVariants.30Sec" = "30 sec";
+"ITS.DialogsRotateVariants.1Min" = "1 min";
+"ITS.DialogsRotateVariants.3Min" = "3 min";
+"ITS.DialogsRotateVariants.5Min" = "5 min";
