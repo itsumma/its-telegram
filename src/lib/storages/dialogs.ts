@@ -41,8 +41,7 @@ import makeError from '../../helpers/makeError';
 import callbackify from '../../helpers/callbackify';
 
 // ITS =>
-import appITSManager from '../../its/managers/appITSManager';
-import appITSDBManager from '../../its/managers/appITSDBManager';
+import appITSStateManager from '../../its/managers/appITSStateManager';
 // ITS <=
 
 export type FolderDialog = {
@@ -188,7 +187,7 @@ export default class DialogsStorage extends AppManager {
       }
 
       // ITS => dialog props
-      await appITSDBManager.openDatabase();
+      await appITSStateManager.initState();
       await this.appITSManager.initDialogs(dialogs);
       // ITS <=
 
