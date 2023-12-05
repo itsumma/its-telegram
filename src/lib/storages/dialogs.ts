@@ -35,7 +35,7 @@ import defineNotNumerableProperties from '../../helpers/object/defineNotNumerabl
 import setDialogIndex from '../appManagers/utils/dialogs/setDialogIndex';
 import deferredPromise, {CancellablePromise} from '../../helpers/cancellablePromise';
 import pause from '../../helpers/schedulers/pause';
-import {BroadcastEvents} from '../rootScope';
+import rootScope, {BroadcastEvents} from '../rootScope';
 import assumeType from '../../helpers/assumeType';
 import makeError from '../../helpers/makeError';
 import callbackify from '../../helpers/callbackify';
@@ -555,6 +555,11 @@ export default class DialogsStorage extends AppManager {
   public generateFavouriteDialogIndex(peerId: PeerId) {
     return (0x7ffe0000 * 0x10000) + (peerId & 0x0000FFFF) // ? через peerId или topDate
   }
+
+  public isFavoriteDialog(dialog: Dialog, indexKey : any) {
+    const index = getDialogIndex(dialog, indexKey);
+    return ((index - (dialog.peerId & 0x0000FFFF)) / 0x10000) == 0x7ffe0000
+  }
   // ITS <=
 
   // public makeFilterForTopics(id: number): MyDialogFilter {
@@ -786,12 +791,14 @@ export default class DialogsStorage extends AppManager {
         }
       }
 
-      if(
-        dialog.draft?._ === 'draftMessage' &&
-        dialog.draft.date > topDate
-      ) {
-        topDate = dialog.draft.date;
-      }
+      // ITS =>
+      // if(
+      //   dialog.draft?._ === 'draftMessage' &&
+      //   dialog.draft.date > topDate
+      // ) {
+      //  topDate = dialog.draft.date;
+      // }
+      // ITS <=
     }
 
     topDate ||= tsNow(true);
@@ -801,9 +808,29 @@ export default class DialogsStorage extends AppManager {
     let index = this.generateDialogIndex(topDate, isPinned);
     if(!isPinned && !resetIndex) {
       let sorted = false;
+
+      // FAVOURITES
       if(this.appITSManager.isFavouriteDialog(dialog.peerId)) {
         index = this.generateFavouriteDialogIndex(dialog.peerId);
         sorted = true;
+      }
+
+      const dialogsRotateInterval = appITSStateManager.getSettingFromCache('dialogsRotateInterval', false);
+      if(!justReturn && !sorted && !dialog.peerId.isUser() && message && dialog.top_message && dialogsRotateInterval) {
+        const our = message.fromId === rootScope.myId || (message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
+        const isOut = our && (!(message as Message.message).fwd_from || message.fromId !== rootScope.myId);
+        const newMessageTimestamp = (message as any).date;
+        const topMessageTimestamp = (dialog as Dialog).topMessage.date;
+        const timestampConditionStatement = ((topMessageTimestamp * 1000 + dialogsRotateInterval) > newMessageTimestamp * 1000)
+
+        if(!isOut && timestampConditionStatement) {
+          const indexKey = getDialogIndexKey((dialog as Dialog).folder_id);
+          index = getDialogIndex(dialog, indexKey);
+
+          if(this.isFavoriteDialog(dialog as Dialog, indexKey) && !this.appITSManager.isFavouriteDialog(dialog.peerId)) {
+            index = this.generateDialogIndex(topDate, isPinned);
+          }
+        }
       }
     }
     // ITS <=
