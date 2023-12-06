@@ -40,10 +40,6 @@ import assumeType from '../../helpers/assumeType';
 import makeError from '../../helpers/makeError';
 import callbackify from '../../helpers/callbackify';
 
-// ITS =>
-import appITSStateManager from '../../its/managers/appITSStateManager';
-// ITS <=
-
 export type FolderDialog = {
   dialog: Dialog,
   index: number
@@ -187,7 +183,7 @@ export default class DialogsStorage extends AppManager {
       }
 
       // ITS => dialog props
-      await appITSStateManager.initState();
+      await this.appITSStateManager.initState();
       await this.appITSManager.initDialogs(dialogs);
       // ITS <=
 
@@ -826,15 +822,15 @@ export default class DialogsStorage extends AppManager {
 
       // MISSED
       if(!sorted &&
-        appITSStateManager.getSettingFromCache('missedTSDialogsActive') &&
-        appITSStateManager.getSettingFromCache('missedTSDialogsToTop') &&
+        this.appITSStateManager.getSettingFromCache('missedTSDialogsActive') &&
+        this.appITSStateManager.getSettingFromCache('missedTSDialogsToTop') &&
         this.appITSManager.isMissedDialog(dialog.peerId)
       ) {
         index = this.generateMissedDialogIndex(dialog.peerId);
         sorted = true;
       }
 
-      const dialogsRotateInterval = appITSStateManager.getSettingFromCache('dialogsRotateInterval', false);
+      const dialogsRotateInterval = this.appITSStateManager.getSettingFromCache('dialogsRotateInterval', false);
       if(!justReturn && !sorted && !dialog.peerId.isUser() && message && dialog.top_message && dialogsRotateInterval) {
         const our = message.fromId === rootScope.myId || (message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
         const isOut = our && (!(message as Message.message).fwd_from || message.fromId !== rootScope.myId);

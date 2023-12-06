@@ -54,6 +54,7 @@ import type AppBoostsManager from './appBoostsManager';
 import type {AppManagers} from './managers';
 // ITS =>
 import type AppITSManager from '../../its/managers/appITSManager';
+import type AppITSStateManager from '../../its/managers/appITSStateManager';
 // ITS <=
 
 export class AppManager {
@@ -108,6 +109,7 @@ export class AppManager {
 
   // ITS =>
   protected appITSManager: AppITSManager;
+  protected appITSStateManager: AppITSStateManager;
   // ITS <=
 
   public clear: (init?: boolean) => void;

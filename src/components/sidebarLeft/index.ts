@@ -66,7 +66,7 @@ import flatten from '../../helpers/array/flatten';
 
 // ITS =>
 import ItsSettingsCheckBox from '../../its/components/itsSettingsCheckBox';
-import appITSStateManager, {ITSSettingsChangedOptions} from '../../its/managers/appITSStateManager';
+import {ITSSettingsChangedOptions} from '../../its/managers/appITSStateManager';
 // ITS <=
 
 
@@ -169,7 +169,7 @@ export class AppSidebarLeft extends SidebarSlider {
       settingsKey: 'missedTSDialogsToTop'
     }) as CheckboxField;
 
-    appITSStateManager.addEventListener('its_settings_changed', (args : ITSSettingsChangedOptions) => {
+    rootScope.addEventListener('its_settings_changed', (args : ITSSettingsChangedOptions) => {
       if(args.name === 'compactViewEnabled') {
         compactViewField.setValueSilently(args.value);
       }

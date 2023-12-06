@@ -29,6 +29,7 @@ import {IS_WORKER} from '../helpers/context';
 // ITS =>
 import {ITSDialogProps} from '../its/managers/appITSDialogPropsManager';
 import {AppPeerPinnedEvent} from '../its/managers/appITSManager';
+import {ITSSettingsChangedOptions} from '../its/managers/appITSStateManager';
 // ITS <=
 
 export type BroadcastEvents = {
@@ -188,7 +189,8 @@ export type BroadcastEvents = {
   'its_dialog_ts_status_changed': ITSDialogProps,
   'its_dialog_favourite_status_changed': ITSDialogProps,
   'its_dialog_missed_status_changed': ITSDialogProps,
-  'its_peer_pinned_event': AppPeerPinnedEvent
+  'its_peer_pinned_event': AppPeerPinnedEvent,
+  'its_settings_changed' : ITSSettingsChangedOptions,
   // ITS <=
 };
 

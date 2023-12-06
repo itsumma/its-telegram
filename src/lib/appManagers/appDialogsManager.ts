@@ -111,12 +111,6 @@ import Icon from '../../components/icon';
 import setBadgeContent from '../../helpers/setBadgeContent';
 import createBadge from '../../helpers/createBadge';
 
-// ITS =>
-import appITSStateManager from '../../its/managers/appITSStateManager';
-import appITSManager from '../../its/managers/appITSManager';
-// ITS <=
-
-
 export const DIALOG_LIST_ELEMENT_TAG = 'A';
 
 export type DialogDom = {
@@ -844,7 +838,7 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
       fastRafConventional(() => {
         const selector = '.chatlist-chat';
         // ITS => compact view
-        const isCompact = appITSStateManager.getSettingFromCache('compactViewEnabled');
+        const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
         const saveLength = isCompact ? 30 : 19;
         // ITS <=
         const viewportSlice = getViewportSlice({
@@ -1284,7 +1278,7 @@ class Some3 extends Some<ForumTopic> {
   public async loadDialogsInner(side: SliceSides) {
     const {indexKey} = this;
     // ITS => compact view
-    const isCompact = appITSStateManager.getSettingFromCache('compactViewEnabled');
+    const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
     const chatHeight = isCompact ? 26 : 40;
     let loadCount = windowSize.height / chatHeight * 1.25 | 0;
     // let loadCount = windowSize.height / 64 * 1.25 | 0;
@@ -1478,7 +1472,7 @@ class Some2 extends Some<Dialog> {
       this.updateDialog(dialog);
       // TODO INDICATORS
 
-      const isMissedEnabled = appITSStateManager.getSettingFromCache('missedTSDialogsActive');
+      const isMissedEnabled = this.managers.appITSStateManager.getSettingFromCache('missedTSDialogsActive');
       if(!isMissedEnabled)
         return;
 
@@ -1489,7 +1483,7 @@ class Some2 extends Some<Dialog> {
       dom.listEl.classList.toggle('its-is-missed', dialogProps.missed);
     });
 
-    appITSStateManager.addEventListener('its_settings_changed', args => {
+    rootScope.addEventListener('its_settings_changed', args => {
       switch(args.name) {
         case 'missedDialogsToTop':
           this.managers.appITSManager.orderMissedDialogs();
@@ -1511,7 +1505,7 @@ class Some2 extends Some<Dialog> {
   public async loadDialogsInner(side: SliceSides) {
     const {filterId, indexKey} = this;
     // ITS => compact view
-    const isCompact = appITSStateManager.getSettingFromCache('compactViewEnabled');
+    const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
     const chatHeight = isCompact ? 26 : 40;
     let loadCount = windowSize.height / chatHeight * 1.25 | 0;
     // let loadCount = windowSize.height / 72 * 1.25 | 0;

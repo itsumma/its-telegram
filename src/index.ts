@@ -39,6 +39,10 @@ import {nextRandomUint} from './helpers/random';
 import {IS_OVERLAY_SCROLL_SUPPORTED, USE_CUSTOM_SCROLL, USE_NATIVE_SCROLL} from './environment/overlayScrollSupport';
 // import appNavigationController from './components/appNavigationController';
 
+// ITS =>
+import {ITSSettingsChangedOptions, ITSState} from './its/managers/appITSStateManager';
+// ITS <=
+
 /* false &&  */document.addEventListener('DOMContentLoaded', async() => {
   // * Randomly choose a version if user came from google
   try {
@@ -336,13 +340,19 @@ import {IS_OVERLAY_SCROLL_SUPPORTED, USE_CUSTOM_SCROLL, USE_NATIVE_SCROLL} from 
 
   // ITS => state
   try {
-    const [itsStateManager] = await Promise.all([
+    /* const [itsStateManager] = await Promise.all([
       import('./its/managers/appITSStateManager')
-    ]);
-    await itsStateManager.default.initState();
+    ]); */
+    rootScope.managers.appITSStateManager.initState()
+    .then((state: ITSState) => {
+      const isCompact = state.compactViewEnabled;
+      document.documentElement.classList.toggle('its-compact', isCompact);
 
-    const isCompact = itsStateManager.default.getSettingFromCache('compactViewEnabled', false);
-    document.documentElement.classList.toggle('its-compact', isCompact);
+      rootScope.addEventListener('its_settings_changed', (args: ITSSettingsChangedOptions) => {
+        if(args.name === 'compactViewEnabled')
+          document.documentElement.classList.toggle('its-compact');
+      });
+    });
   } catch(e) {
     console.error(e);
   }

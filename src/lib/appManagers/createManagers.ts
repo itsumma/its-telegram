@@ -55,6 +55,7 @@ import AppBotsManager from './appBotsManager';
 import AppBoostsManager from './appBoostsManager';
 // ITS =>
 import AppITSManager from '../../its/managers/appITSManager';
+import AppITSStateManager from '../../its/managers/appITSStateManager';
 // ITS <=
 
 export default function createManagers(appStoragesManager: AppStoragesManager, userId: UserId) {
@@ -107,7 +108,8 @@ export default function createManagers(appStoragesManager: AppStoragesManager, u
     appBotsManager: new AppBotsManager,
     appBoostsManager: new AppBoostsManager,
     // ITS =>
-    appITSManager: new AppITSManager
+    appITSManager: new AppITSManager,
+    appITSStateManager: new AppITSStateManager
     // ITS <=
   };
 
