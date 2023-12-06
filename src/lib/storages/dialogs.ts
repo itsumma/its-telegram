@@ -560,6 +560,15 @@ export default class DialogsStorage extends AppManager {
     const index = getDialogIndex(dialog, indexKey);
     return ((index - (dialog.peerId & 0x0000FFFF)) / 0x10000) == 0x7ffe0000
   }
+
+  public generateMissedDialogIndex(peerId: PeerId) {
+    return (0x7ffd0000 * 0x10000) + (peerId & 0x0000FFFF) // ? через peerId или topDate
+  }
+
+  public isMissedDialog(dialog: Dialog, indexKey: any) {
+    const index = getDialogIndex(dialog, indexKey);
+    return ((index - (dialog.peerId & 0x0000FFFF)) / 0x10000) == 0x7ffd0000
+  }
   // ITS <=
 
   // public makeFilterForTopics(id: number): MyDialogFilter {
@@ -815,6 +824,16 @@ export default class DialogsStorage extends AppManager {
         sorted = true;
       }
 
+      // MISSED
+      if(!sorted &&
+        appITSStateManager.getSettingFromCache('missedTSDialogsActive') &&
+        appITSStateManager.getSettingFromCache('missedTSDialogsToTop') &&
+        this.appITSManager.isMissedDialog(dialog.peerId)
+      ) {
+        index = this.generateMissedDialogIndex(dialog.peerId);
+        sorted = true;
+      }
+
       const dialogsRotateInterval = appITSStateManager.getSettingFromCache('dialogsRotateInterval', false);
       if(!justReturn && !sorted && !dialog.peerId.isUser() && message && dialog.top_message && dialogsRotateInterval) {
         const our = message.fromId === rootScope.myId || (message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
@@ -827,6 +846,12 @@ export default class DialogsStorage extends AppManager {
           const indexKey = getDialogIndexKey((dialog as Dialog).folder_id);
           index = getDialogIndex(dialog, indexKey);
 
+          // reset missed index
+          if(this.isMissedDialog(dialog as Dialog, indexKey) && !this.appITSManager.isMissedDialog(dialog.peerId)) {
+            index = this.generateDialogIndex(topDate, isPinned);
+          }
+
+          // reset favourite index
           if(this.isFavoriteDialog(dialog as Dialog, indexKey) && !this.appITSManager.isFavouriteDialog(dialog.peerId)) {
             index = this.generateDialogIndex(topDate, isPinned);
           }
