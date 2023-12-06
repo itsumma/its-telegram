@@ -1488,6 +1488,15 @@ class Some2 extends Some<Dialog> {
 
       dom.listEl.classList.toggle('its-is-missed', dialogProps.missed);
     });
+
+    appITSStateManager.addEventListener('its_settings_changed', args => {
+      switch(args.name) {
+        case 'missedDialogsToTop':
+          this.managers.appITSManager.orderMissedDialogs();
+          this.loadDialogsInner('bottom');
+          break;
+      }
+    });
     // ITS <=
   }
 
