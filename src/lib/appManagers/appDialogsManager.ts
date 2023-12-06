@@ -1429,6 +1429,16 @@ class Some2 extends Some<Dialog> {
     });
 
     // ITS =>
+    this.listenerSetter.add(rootScope)('its_settings_changed', (args) => {
+      this.log(args);
+      switch(args.name) {
+        case 'missedTSDialogsToTop':
+          this.managers.appITSManager.orderMissedDialogs();
+          this.loadDialogsInner('bottom');
+          break;
+      }
+    });
+
     this.listenerSetter.add(rootScope)('its_peer_pinned_event', async(args) => {
       const _isPinned = await this.managers.dialogsStorage.isDialogPinned(args.peerId, args.filterId);
       const dom = this.getDialogDom(args.peerId);
@@ -1481,15 +1491,6 @@ class Some2 extends Some<Dialog> {
         return;
 
       dom.listEl.classList.toggle('its-is-missed', dialogProps.missed);
-    });
-
-    rootScope.addEventListener('its_settings_changed', args => {
-      switch(args.name) {
-        case 'missedDialogsToTop':
-          this.managers.appITSManager.orderMissedDialogs();
-          this.loadDialogsInner('bottom');
-          break;
-      }
     });
     // ITS <=
   }
