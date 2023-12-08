@@ -96,6 +96,19 @@ export default class DialogsContextMenu {
       }
       // ITS <=
     }, {
+      // ITS =>
+      icon: 'settings',
+      text: 'ITS.SetMissed',
+      onClick: () => this.managers.appITSManager.setMissedStatus(this.dialog.peerId, true),
+      verify: async() => {
+        const [_isTechsupport, _isMissed] = await Promise.all([
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId),
+          this.managers.appITSManager.isMissedDialog(this.dialog.peerId)
+        ]);
+        return _isTechsupport && !_isMissed;
+      }
+      // ITS <=
+    }, {
       icon: 'unread',
       text: 'MarkAsUnread',
       onClick: this.onUnreadClick,
