@@ -845,7 +845,9 @@ export default class DialogsStorage extends AppManager {
         const newMessageTimestamp = (message as any).date;
         const topMessageTimestamp = (dialog as Dialog).topMessage.date;
         const title = this.appITSManager.getDialogName(dialog.peerId);
-        console.log(title, topMessageTimestamp, dialogsRotateInterval, newMessageTimestamp, '++', tsNow());
+        // console.log(title, topMessageTimestamp, dialogsRotateInterval, newMessageTimestamp, '++', tsNow());
+        if(Number(tsNow() - topMessageTimestamp * 1000) < dialogsRotateInterval)
+          console.log(title, Number(tsNow() - topMessageTimestamp * 1000), dialogsRotateInterval);
         // TODO правильный фильтр что последнее сообщение должно быть отправлено за последние сколько то минут и если интервал больше - обновляем индекс
         const timestampConditionStatement = ((topMessageTimestamp + dialogsRotateInterval) > newMessageTimestamp * 1000)
 
