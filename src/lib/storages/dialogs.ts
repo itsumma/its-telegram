@@ -831,12 +831,24 @@ export default class DialogsStorage extends AppManager {
       }
 
       const dialogsRotateInterval = this.appITSStateManager.getSettingFromCache('dialogsRotateInterval', false);
-      if(!justReturn && !sorted && !dialog.peerId.isUser() && message && dialog.top_message && dialogsRotateInterval) {
-        const our = message.fromId === rootScope.myId || (message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
+      if(
+        // !justReturn &&
+        !sorted &&
+        !dialog.peerId.isUser() &&
+        message &&
+        (dialog as Dialog).topMessage &&
+        dialogsRotateInterval) {
+        // console.log('=====');
+        // console.log(message.fromId, rootScope.myId, message.pFlags.out, this.appPeersManager.isMegagroup(dialog.peerId));
+        const our = message.fromId === rootScope.myId || (!!message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
         const isOut = our && (!(message as Message.message).fwd_from || message.fromId !== rootScope.myId);
         const newMessageTimestamp = (message as any).date;
         const topMessageTimestamp = (dialog as Dialog).topMessage.date;
-        const timestampConditionStatement = ((topMessageTimestamp * 1000 + dialogsRotateInterval) > newMessageTimestamp * 1000)
+        const title = this.appITSManager.getDialogName(dialog.peerId);
+        console.log(title, topMessageTimestamp, dialogsRotateInterval, newMessageTimestamp, '++', tsNow());
+        // TODO правильный фильтр что последнее сообщение должно быть отправлено за последние сколько то минут и если интервал больше - обновляем индекс
+        const timestampConditionStatement = ((topMessageTimestamp + dialogsRotateInterval) > newMessageTimestamp * 1000)
+
 
         if(!isOut && timestampConditionStatement) {
           const indexKey = getDialogIndexKey((dialog as Dialog).folder_id);
