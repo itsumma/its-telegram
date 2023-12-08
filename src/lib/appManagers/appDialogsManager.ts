@@ -932,7 +932,6 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
     const cachedInfoPromise = deferredPromise<boolean>();
     const renderPromise = new Promise<void>(async(resolve, reject) => {
       const chatList = this.sortedList.list;
-      console.log(chatList);
       let placeholder = this.placeholder;
       try {
         const getConversationsResult = this.loadDialogsInner(side);
@@ -1430,7 +1429,6 @@ class Some2 extends Some<Dialog> {
 
     // ITS =>
     this.listenerSetter.add(rootScope)('its_settings_changed', async(args) => {
-      this.log(args);
       switch(args.name) {
         case 'missedTSDialogsToTop':
           await this.managers.appITSManager.orderMissedDialogs()
