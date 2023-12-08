@@ -83,6 +83,19 @@ export default class DialogsContextMenu {
       verify: () => IS_SHARED_WORKER_SUPPORTED
     }, ITS <= */
     return this.buttons ??= [{
+      // ITS =>
+      icon: 'settings',
+      text: 'ITS.IsOk',
+      onClick: () => this.managers.appITSManager.resetMissedStatus(this.dialog.peerId),
+      verify: async() => {
+        const [_isTechsupport, _isMissed] = await Promise.all([
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId),
+          this.managers.appITSManager.isMissedDialog(this.dialog.peerId)
+        ]);
+        return _isTechsupport && _isMissed;
+      }
+      // ITS <=
+    }, {
       icon: 'unread',
       text: 'MarkAsUnread',
       onClick: this.onUnreadClick,

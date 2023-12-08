@@ -1889,3 +1889,5 @@
 "ITS.DialogsRotateVariants.1Min" = "1 min";
 "ITS.DialogsRotateVariants.3Min" = "3 min";
 "ITS.DialogsRotateVariants.5Min" = "5 min";
+"ITS.IsOk" = "Its OK";
+"ITS.SetMissed" = "Set missed";
