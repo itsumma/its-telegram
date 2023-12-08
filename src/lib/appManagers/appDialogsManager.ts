@@ -1430,6 +1430,13 @@ class Some2 extends Some<Dialog> {
     // ITS =>
     this.listenerSetter.add(rootScope)('its_settings_changed', async(args) => {
       switch(args.name) {
+        case 'missedTSDialogsActive':
+          await this.managers.appITSManager.orderMissedDialogs()
+          .then(async() => {
+            await this.onChatsScroll(); // TODO - установка индикатора на табу
+          });
+          break;
+
         case 'missedTSDialogsToTop':
           await this.managers.appITSManager.orderMissedDialogs()
           .then(async() => {

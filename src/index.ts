@@ -348,9 +348,15 @@ import {ITSSettingsChangedOptions, ITSState} from './its/managers/appITSStateMan
       const isCompact = state.compactViewEnabled;
       document.documentElement.classList.toggle('its-compact', isCompact);
 
+      const isMissedActive = state.missedTSDialogsActive;
+      document.documentElement.classList.toggle('its-missed-active', isMissedActive);
+
       rootScope.addEventListener('its_settings_changed', (args: ITSSettingsChangedOptions) => {
         if(args.name === 'compactViewEnabled')
-          document.documentElement.classList.toggle('its-compact');
+          document.documentElement.classList.toggle('its-compact', args.value);
+
+        if(args.name === 'missedTSDialogsActive')
+          document.documentElement.classList.toggle('its-missed-active', args.value);
       });
     });
   } catch(e) {
