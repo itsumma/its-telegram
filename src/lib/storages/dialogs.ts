@@ -838,23 +838,17 @@ export default class DialogsStorage extends AppManager {
         message &&
         (dialog as Dialog).topMessage &&
         dialogsRotateInterval) {
-        // console.log('=====');
-        // console.log(message.fromId, rootScope.myId, message.pFlags.out, this.appPeersManager.isMegagroup(dialog.peerId));
         const our = message.fromId === rootScope.myId || (!!message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
         const isOut = our && (!(message as Message.message).fwd_from || message.fromId !== rootScope.myId);
-        const newMessageTimestamp = (message as any).date;
         const topMessageTimestamp = (dialog as Dialog).topMessage.date;
-        const title = this.appITSManager.getDialogName(dialog.peerId);
-        // console.log(title, topMessageTimestamp, dialogsRotateInterval, newMessageTimestamp, '++', tsNow());
-        if(Number(tsNow() - topMessageTimestamp * 1000) < dialogsRotateInterval)
-          console.log(title, Number(tsNow() - topMessageTimestamp * 1000), dialogsRotateInterval);
-        // TODO правильный фильтр что последнее сообщение должно быть отправлено за последние сколько то минут и если интервал больше - обновляем индекс
-        const timestampConditionStatement = ((topMessageTimestamp + dialogsRotateInterval) > newMessageTimestamp * 1000)
-
+        const __tsNov = tsNow();
+        const timestampConditionStatement = Number(__tsNov - topMessageTimestamp * 1000) < dialogsRotateInterval;
 
         if(!isOut && timestampConditionStatement) {
           const indexKey = getDialogIndexKey((dialog as Dialog).folder_id);
-          index = getDialogIndex(dialog, indexKey);
+          const __index = getDialogIndex(dialog, indexKey);
+          if(__index)
+            index = __index;
 
           // reset missed index
           if(this.isMissedDialog(dialog as Dialog, indexKey) && !this.appITSManager.isMissedDialog(dialog.peerId)) {
