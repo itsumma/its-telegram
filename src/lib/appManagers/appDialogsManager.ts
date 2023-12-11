@@ -839,7 +839,7 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
         const selector = '.chatlist-chat';
         // ITS => compact view
         const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
-        const saveLength = isCompact ? 30 : 19;
+        const saveLength = isCompact ? 60 : 38;
         // ITS <=
         const viewportSlice = getViewportSlice({
           overflowElement: this.scrollable.container,
@@ -1280,6 +1280,7 @@ class Some3 extends Some<ForumTopic> {
     const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
     const chatHeight = isCompact ? 26 : 40;
     let loadCount = windowSize.height / chatHeight * 1.25 | 0;
+    loadCount = loadCount * 2;
     // let loadCount = windowSize.height / 64 * 1.25 | 0;
     // ITS <=
     let offsetIndex = 0;
@@ -1433,6 +1434,7 @@ class Some2 extends Some<Dialog> {
         case 'missedTSDialogsActive':
           await this.managers.appITSManager.orderMissedDialogs()
           .then(async() => {
+            // await this.loadDialogsInner('bottom');
             await this.onChatsScroll(); // TODO - установка индикатора на табу
           });
           break;
@@ -1440,6 +1442,7 @@ class Some2 extends Some<Dialog> {
         case 'missedTSDialogsToTop':
           await this.managers.appITSManager.orderMissedDialogs()
           .then(async() => {
+            // await this.loadDialogsInner('bottom');
             await this.onChatsScroll();
           })
           break;
@@ -1516,6 +1519,7 @@ class Some2 extends Some<Dialog> {
     const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
     const chatHeight = isCompact ? 26 : 40;
     let loadCount = windowSize.height / chatHeight * 1.25 | 0;
+    loadCount = loadCount * 2;
     // let loadCount = windowSize.height / 72 * 1.25 | 0;
     // ITS <=
     let offsetIndex = 0;
