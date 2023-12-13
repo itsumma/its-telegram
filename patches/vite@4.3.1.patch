@@ -1,0 +1,62 @@
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+new file mode 100644
+index 0000000000000000000000000000000000000000..b58b603fea78041071d125a30db58d79b3d49217
+--- /dev/null
++++ b/.idea/.gitignore
+@@ -0,0 +1,5 @@
++# Default ignored files
++/shelf/
++/workspace.xml
++# Editor-based HTTP Client requests
++/httpRequests/
+diff --git a/.idea/d8fb4b78c067a74861b06cc7c4b431ed.iml b/.idea/d8fb4b78c067a74861b06cc7c4b431ed.iml
+new file mode 100644
+index 0000000000000000000000000000000000000000..0c8867d7e175f46d4bcd66698ac13f4ca00cf592
+--- /dev/null
++++ b/.idea/d8fb4b78c067a74861b06cc7c4b431ed.iml
+@@ -0,0 +1,12 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module type="WEB_MODULE" version="4">
++  <component name="NewModuleRootManager">
++    <content url="file://$MODULE_DIR$">
++      <excludeFolder url="file://$MODULE_DIR$/temp" />
++      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
++      <excludeFolder url="file://$MODULE_DIR$/tmp" />
++    </content>
++    <orderEntry type="inheritedJdk" />
++    <orderEntry type="sourceFolder" forTests="false" />
++  </component>
++</module>
+\ No newline at end of file
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+new file mode 100644
+index 0000000000000000000000000000000000000000..696b91deb90b224a413ef5891f16ebdbc72a501c
+--- /dev/null
++++ b/.idea/modules.xml
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="ProjectModuleManager">
++    <modules>
++      <module fileurl="file://$PROJECT_DIR$/.idea/d8fb4b78c067a74861b06cc7c4b431ed.iml" filepath="$PROJECT_DIR$/.idea/d8fb4b78c067a74861b06cc7c4b431ed.iml" />
++    </modules>
++  </component>
++</project>
+\ No newline at end of file
+diff --git a/dist/node/chunks/dep-24daf00c.js b/dist/node/chunks/dep-24daf00c.js
+index 69e68aab8b4f7fad991e497a5b019dbd6da1dd60..2704160290ba2dc87c84cd27a4afc679d6930416 100644
+--- a/dist/node/chunks/dep-24daf00c.js
++++ b/dist/node/chunks/dep-24daf00c.js
+@@ -45212,10 +45212,10 @@ function buildImportAnalysisPlugin(config) {
+                                     const chunk = bundle[filename];
+                                     if (chunk) {
+                                         deps.add(chunk.fileName);
+-                                        chunk.imports.forEach(addDeps);
++                                        if(chunk.imports) chunk.imports.forEach(addDeps);
+                                         // Ensure that the css imported by current chunk is loaded after the dependencies.
+                                         // So the style of current chunk won't be overwritten unexpectedly.
+-                                        chunk.viteMetadata.importedCss.forEach((file) => {
++                                        if(chunk.viteMetadata) chunk.viteMetadata.importedCss.forEach((file) => {
+                                             deps.add(file);
+                                         });
+                                     }
