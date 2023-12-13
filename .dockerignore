@@ -1,0 +1,11 @@
+.idea
+node_modules
+dist
+*.md
+.git
+.gitignore
+.github
+public/index.html
+public/index-0d98e2cf.js
+public/index-0d98e2cf.js.map
+public/index-0ee84fee.css

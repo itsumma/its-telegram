@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  tg:
+    container_name: tg
+    platform: linux/amd64
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    working_dir: /app/dist
+    ports:
+      - 9999:80
