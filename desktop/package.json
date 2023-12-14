@@ -5,10 +5,12 @@
   "description": "My Electron application description",
   "main": "main.js",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "rm -rf .public && cp -rf ../public/. ./public/ && cp -rf ../dist/. ./public/  && electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
+    "prebuild": "rm -rf .public && cp -rf ../public/. ./public/ && cp -rf ../dist/. ./public/",
+    "build:mac": "npm run prebuild && electron-forge make --arch=universal --platform=darwin",
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
@@ -18,6 +20,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "cli-truncate": "^4.0.0",
     "electron-context-menu": "^3.6.1",
     "electron-squirrel-startup": "^1.0.0",
     "node-static": "^0.7.11"
