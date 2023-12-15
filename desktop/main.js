@@ -10,7 +10,7 @@ contextMenu({
 app.commandLine.appendSwitch('disable-http-cache');
 
 const static = require('node-static');
-const file = new static.Server(`${__dirname}/public`);
+const file = new static.Server(`${__dirname}/bundle`);
 
 require('http').createServer((req, res) => {
   req.addListener('end', () => {

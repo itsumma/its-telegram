@@ -24,7 +24,7 @@ const handlebarsPlugin = handlebars({
 const serverOptions: ServerOptions = {
   https: false,
   // host: '192.168.92.78',
-  port: 9091
+  port: 9090
 };
 
 const NO_MINIFY = false;
@@ -57,7 +57,8 @@ export default defineConfig({
     // include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [
       // ITS =>
-      '**/desktop/**',
+      'desktop/**',
+      'desktop/bundle/**',
       '**/Dockerfile',
       '**/docker-compose.yaml',
       '**/nginx.docker.conf',
