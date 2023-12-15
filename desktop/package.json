@@ -12,6 +12,7 @@
     "prebuild": "rm -rf .public && cp -rf ../public/. ./public/ && cp -rf ../dist/. ./public/",
     "build:mac": "npm run prebuild && electron-forge make --arch=universal --platform=darwin",
     "build:lin":  "npm run prebuild && electron-forge make",
+    "build:win": "npm run prebuild && deploy-win.bat",
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],
