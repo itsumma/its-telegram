@@ -1891,3 +1891,6 @@
 "ITS.DialogsRotateVariants.5Min" = "5 min";
 "ITS.IsOk" = "Its OK";
 "ITS.SetMissed" = "Set missed";
+"ITS.GearMenu.Reboot" = "Reboot";
+"ITS.GearMenu.ConfirmButton" = "Ok";
+"ITS.GearMenu.ConfirmTitle" = "Confirm";

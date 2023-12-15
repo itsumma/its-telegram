@@ -67,6 +67,7 @@ import flatten from '../../helpers/array/flatten';
 // ITS =>
 import ItsSettingsCheckBox from '../../its/components/itsSettingsCheckBox';
 import {ITSSettingsChangedOptions} from '../../its/managers/appITSStateManager';
+import ItsGearMenu from '../../its/components/itsGearMenu';
 // ITS <=
 
 
@@ -88,6 +89,10 @@ export class AppSidebarLeft extends SidebarSlider {
   private updateBtn: HTMLElement;
   private hasUpdate: boolean;
 
+  // ITS =>
+  private gearMenu: ItsGearMenu;
+  // ITS <=
+
   constructor() {
     super({
       sidebarEl: document.getElementById('column-left') as HTMLDivElement,
@@ -103,6 +108,11 @@ export class AppSidebarLeft extends SidebarSlider {
     (this.inputSearch.input as HTMLInputElement).placeholder = ' ';
     const sidebarHeader = this.sidebarEl.querySelector('.item-main .sidebar-header');
     sidebarHeader.append(this.inputSearch.container);
+
+    // ITS =>
+    this.gearMenu = new ItsGearMenu();
+    sidebarHeader.append(this.gearMenu.container);
+    // ITS <=
 
     const onNewGroupClick = () => {
       this.createTab(AppAddMembersTab).open({
