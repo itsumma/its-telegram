@@ -25,7 +25,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js')
     },
-    icon: path.join(__dirname, 'its.ico')
+    icon: path.join(__dirname, 'favicon.ico')
   });
   mainWindow.removeMenu();
   mainWindow.loadURL('http://127.0.0.1:9876');

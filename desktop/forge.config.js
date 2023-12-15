@@ -1,32 +1,39 @@
 module.exports = {
   packagerConfig: {
     asar: true,
-    icon: './its-ico'
+    icon: './favicon.ico'
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'ITSTelegram',
-        icon: './its-ico.ico'
+        name: 'ITSTelegram-v3',
+        icon: './favicon.ico'
       }
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin']
+      platforms: ['darwin'],
+      config: {
+        name: 'ITSTelegram-v3'
+      }
     },
     {
       name: '@electron-forge/maker-deb',
       config: {
+        name: 'ITSTelegram-v3',
         options: {
-          icon: './its-ico.ico'
+          icon: './favicon.ico'
         }
       }
     },
     {
       name: '@electron-forge/maker-rpm',
-      config: {}
+      config: {
+        name: 'ITSTelegram-v3',
+        icon: './favicon.ico'
+      }
     }
   ],
   plugins: [
