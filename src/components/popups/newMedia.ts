@@ -896,12 +896,12 @@ export default class PopupNewMedia extends PopupElement {
         const albumsLength = Math.ceil(sum / 10);
         args.push(albumsLength);
       } else  */if(foundPhotos) {
-        key = 'PreviewSender.SendPhoto';
-        args.push(foundPhotos);
-      } else if(foundVideos) {
-        key = 'PreviewSender.SendVideo';
-        args.push(foundVideos);
-      }
+          key = 'PreviewSender.SendPhoto';
+          args.push(foundPhotos);
+        } else if(foundVideos) {
+          key = 'PreviewSender.SendVideo';
+          args.push(foundVideos);
+        }
     }
 
     replaceContent(title, i18n(key, args));

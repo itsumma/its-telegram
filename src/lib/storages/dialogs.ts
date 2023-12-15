@@ -1335,19 +1335,19 @@ export default class DialogsStorage extends AppManager {
     /* if(historyStorage === undefined) { // warning
       historyStorage.history.push(mid);
     } else  */if(!slice.length) {
-      historyStorage.history.unshift(mid);
-      historyStorage.count ||= 1;
-      if(this.appMessagesManager.mergeReplyKeyboard(historyStorage, message)) {
-        this.rootScope.dispatchEvent('history_reply_markup', {peerId});
+        historyStorage.history.unshift(mid);
+        historyStorage.count ||= 1;
+        if(this.appMessagesManager.mergeReplyKeyboard(historyStorage, message)) {
+          this.rootScope.dispatchEvent('history_reply_markup', {peerId});
+        }
+      } else if(!slice.isEnd(SliceEnd.Bottom)) { // * this will probably never happen, however, if it does, then it will fix slice with top_message
+        const slice = historyStorage.history.insertSlice([mid]);
+        slice.setEnd(SliceEnd.Bottom);
+        historyStorage.count ||= 1;
+        if(this.appMessagesManager.mergeReplyKeyboard(historyStorage, message)) {
+          this.rootScope.dispatchEvent('history_reply_markup', {peerId});
+        }
       }
-    } else if(!slice.isEnd(SliceEnd.Bottom)) { // * this will probably never happen, however, if it does, then it will fix slice with top_message
-      const slice = historyStorage.history.insertSlice([mid]);
-      slice.setEnd(SliceEnd.Bottom);
-      historyStorage.count ||= 1;
-      if(this.appMessagesManager.mergeReplyKeyboard(historyStorage, message)) {
-        this.rootScope.dispatchEvent('history_reply_markup', {peerId});
-      }
-    }
 
     historyStorage.maxId = mid;
     historyStorage.readMaxId = dialog.read_inbox_max_id;

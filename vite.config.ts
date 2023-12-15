@@ -24,7 +24,7 @@ const handlebarsPlugin = handlebars({
 const serverOptions: ServerOptions = {
   https: false,
   // host: '192.168.92.78',
-  port: 9090
+  port: 9091
 };
 
 const NO_MINIFY = false;
@@ -56,6 +56,13 @@ export default defineConfig({
   test: {
     // include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [
+      // ITS =>
+      '**/desktop/**',
+      '**/Dockerfile',
+      '**/docker-compose.yaml',
+      '**/nginx.docker.conf',
+      '**/patches/**',
+      // ITS <=
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
@@ -84,6 +91,9 @@ export default defineConfig({
   base: '',
   build: {
     target: 'es2020',
+    // ITS =>
+    chunkSizeWarningLimit: 2000,
+    // ITS <=
     sourcemap: true,
     assetsDir: '',
     copyPublicDir: false,
