@@ -16,7 +16,10 @@ module.exports = {
       name: '@electron-forge/maker-zip',
       platforms: ['darwin'],
       config: {
-        name: 'ITSTelegram-v3'
+        name: 'ITSTelegram-v3',
+        options: {
+          icon: './favicon.ico'
+        }
       }
     },
     {
