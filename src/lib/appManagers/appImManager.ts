@@ -2442,7 +2442,10 @@ export class AppImManager extends EventListenerBase<{
     });
   }
 
-  public setPeerColorToElement(
+  // ITS =>
+  // public setPeerColorToElement(
+  public async setPeerColorToElement(
+  // ITS <=
     peerId: PeerId,
     element: HTMLElement,
     messageHighlightning?: boolean,
@@ -2465,6 +2468,12 @@ export class AppImManager extends EventListenerBase<{
       peerColorRgbValue = `var(--peer-${colorIndex}-color-rgb)`;
       peerBorderBackgroundValue = `var(--peer-${colorIndex}-border-background)`;
     }
+
+    // ITS =>
+    const isAdmin = await this.managers.appITSManager.userIsAdmin(peerId);
+    if(isAdmin)
+      peerColorRgbValue = peerColorRgbValue = `var(--peer-0-color-rgb)`;
+    // ITS <=
 
     element.style.setProperty('--peer-color-rgb', peerColorRgbValue);
     element.style.setProperty('--peer-border-background', peerBorderBackgroundValue);
