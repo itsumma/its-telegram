@@ -4,7 +4,7 @@ const httpProxy = require('http-proxy');
 const app = express();
 
 const fromPort = 80;
-const toPort = 9090;
+const toPort = 9092;
 const host = 'localhost';
 
 app.set('etag', false);
