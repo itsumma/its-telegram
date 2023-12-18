@@ -1894,3 +1894,8 @@
 "ITS.GearMenu.Reboot" = "Reboot";
 "ITS.GearMenu.ConfirmButton" = "Ok";
 "ITS.GearMenu.ConfirmTitle" = "Confirm";
+"ITS.GearMenu.ReadAllDialogs" = "Read all dialogs";
+"ITS.GearMenu.ReadAllTSDialogs" = "Read all TS-dialogs";
+"ITS.GearMenu.ReadAllNonTSDialogs" = "Read all non-TS-dialogs";
+"ITS.GearMenu.MuteAllTSDialogs" = "Mute all TS-dialogs";
+"ITS.GearMenu.ItsAllOk" = "Its all OK";
