@@ -1042,6 +1042,8 @@ export default class ChatContextMenu {
   private onCopyClick = async() => {
     if(isSelectionEmpty()) {
       copyTextToClipboard(this.selectedMessagesText);
+      const mids = await this.managers.appITSManager.generateCopyBody([1, 2, 3]);
+      console.log(mids);
     } else {
       document.execCommand('copy');
       // cancelSelection();
