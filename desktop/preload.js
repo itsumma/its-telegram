@@ -10,12 +10,13 @@ window.addEventListener('DOMContentLoaded', () => {
     replaceText(`${type}-version`, process.versions[type])
   }
 
-  const {shell} = require('electron')
+  const {shell} = require('electron').shell;
 
   document.body.addEventListener('click', event => {
     if(event.target.tagName.toLowerCase() === 'a' && event.target.protocol != 'file:') {
-      event.preventDefault()
-      shell.openExternal(event.target.href)
+      event.preventDefault();
+      event.stopPropagation();
+      shell.openExternal(event.target.href);
     }
   });
 })

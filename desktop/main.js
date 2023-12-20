@@ -18,6 +18,8 @@ require('http').createServer((req, res) => {
   }).resume();
 }).listen(9876);
 
+
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1024,
@@ -29,6 +31,16 @@ function createWindow() {
   });
   mainWindow.removeMenu();
   mainWindow.loadURL('http://127.0.0.1:9876');
+
+  mainWindow.webContents.setWindowOpenHandler(({url}) => {
+    if(url.startsWith('file:')){
+      return {action: 'allow'};
+    }
+    const {shell} = require('electron');
+    console.log(shell);
+    shell.openExternal(url);
+    return {action: 'deny'};
+  })
 }
 
 app.whenReady().then(() => {
