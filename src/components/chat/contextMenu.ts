@@ -1041,9 +1041,20 @@ export default class ChatContextMenu {
 
   private onCopyClick = async() => {
     if(isSelectionEmpty()) {
-      copyTextToClipboard(this.selectedMessagesText);
-      const mids = await this.managers.appITSManager.generateCopyBody([1, 2, 3]);
-      console.log(mids);
+      // ITS =>
+      let mids: number[];
+      if(!this.chat.selection.isSelecting) {
+        mids = [this.mid];
+      } else {
+        mids = this.chat.selection.getSelectedMids();
+      }
+      const messages = await Promise.all(mids.map(async(mid) => {
+        return (await this.chat.getMessage(mid)) as Message.message;
+      }))
+      const strToCopy = await this.managers.appITSManager.generateCopyBody(messages);
+      copyTextToClipboard(strToCopy);
+      // copyTextToClipboard(this.selectedMessagesText);
+      // ITS <=
     } else {
       document.execCommand('copy');
       // cancelSelection();
