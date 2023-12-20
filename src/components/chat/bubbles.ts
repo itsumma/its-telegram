@@ -6390,6 +6390,30 @@ export default class ChatBubbles {
       bubble.classList.add('with-beside-button');
     }
 
+    // ITS =>
+    if('message' in message) {
+      const re = new RegExp('^Forwarded from: (.*)$', 'mi');
+      const msg: string = message.message as any as string;
+      const match = (msg.match(re));
+      if(match) {
+        const dialog = await this.managers.appITSManager.getDialogByName(match[1]);
+        if(dialog) {
+          const goto = document.createElement('div');
+          goto.classList.add('bubble-beside-button', 'goto-original', 'bubble-beside-button-forward');
+          const icon = Icon('arrow_next');
+          goto.append(icon);
+          bubbleContainer.append(goto);
+
+          bubble.dataset.savedFrom = '' + dialog.peerId;
+          if(dialog.top_message) {
+            bubble.dataset.savedFrom += '_' + dialog.top_message;
+          }
+          bubble.classList.add('with-beside-button');
+        }
+      }
+    }
+    // ITS <=
+
     bubble.classList.add(isOut ? 'is-out' : 'is-in');
 
     if(withReplies) {
