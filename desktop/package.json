@@ -1,7 +1,7 @@
 {
   "name": "ITSTelegram-v3",
   "productName": "ITSTelegram-v3",
-  "version": "3.0.0.beta2",
+  "version": "3.0.2",
   "description": "ITSumma Telegram Client",
   "main": "main.js",
   "scripts": {
