@@ -17,7 +17,9 @@ module.exports = {
     'src/vendor/**',
     'src/solid/**',
     'src/opus-recorder/**',
-    'public/**'
+    'public/**',
+    'src/components/popups/**',
+    'src/lib/storages/**'
   ],
   overrides: [{
     files: ['*.ts'],
