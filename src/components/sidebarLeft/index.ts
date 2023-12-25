@@ -481,6 +481,8 @@ export class AppSidebarLeft extends SidebarSlider {
         return;
       }
 
+      // ITS => skip update
+      /*
       const CHECK_UPDATE_INTERVAL = 1800e3;
       const checkUpdateInterval = setInterval(() => {
         fetch('version', {cache: 'no-cache'})
@@ -497,6 +499,8 @@ export class AppSidebarLeft extends SidebarSlider {
         })
         .catch(noop);
       }, CHECK_UPDATE_INTERVAL);
+      */
+      // ITS <=
     });
 
     const onResize = () => {
@@ -763,7 +767,9 @@ export class AppSidebarLeft extends SidebarSlider {
           hideNewBtnMenuTimeout = window.setTimeout(() => {
             hideNewBtnMenuTimeout = 0;
             this.newBtnMenu.classList.remove('is-hidden');
-            this.hasUpdate && this.updateBtn.classList.remove('is-hidden');
+            // ITS => skip updates
+            // this.hasUpdate && this.updateBtn.classList.remove('is-hidden');
+            // ITS <=
           }, 150);
         }
 
@@ -778,7 +784,9 @@ export class AppSidebarLeft extends SidebarSlider {
       this.toolsBtn.classList.remove(activeClassName);
       this.backBtn.classList.add(activeClassName);
       this.newBtnMenu.classList.add('is-hidden');
-      this.updateBtn.classList.add('is-hidden');
+      // ITS => skip updates
+      // this.updateBtn.classList.add('is-hidden');
+      // ITS <=
       this.toolsBtn.parentElement.firstElementChild.classList.toggle('state-back', true);
 
       const navigationType: NavigationItem['type'] = 'global-search';
