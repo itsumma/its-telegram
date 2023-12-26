@@ -58,7 +58,6 @@ import AppStatisticsManager from './appStatisticsManager';
 // ITS =>
 import AppITSManager from '../../its/managers/appITSManager';
 import AppITSStateManager from '../../its/managers/appITSStateManager';
-import AppITSDialogsUtilsManager from '../../its/managers/appITSDialogsUtilsManager';
 // ITS <=
 
 export default function createManagers(appStoragesManager: AppStoragesManager, userId: UserId) {
@@ -113,8 +112,7 @@ export default function createManagers(appStoragesManager: AppStoragesManager, u
     appStatisticsManager: new AppStatisticsManager,
     // ITS =>
     appITSManager: new AppITSManager,
-    appITSStateManager: new AppITSStateManager,
-    appITSDialogUtilsManager: new AppITSDialogsUtilsManager
+    appITSStateManager: new AppITSStateManager
     // ITS <=
   };
 
