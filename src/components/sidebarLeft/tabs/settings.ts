@@ -32,6 +32,10 @@ import ButtonCorner from '../../buttonCorner';
 import PopupPremium from '../../popups/premium';
 import appImManager from '../../../lib/appManagers/appImManager';
 
+// ITS =>
+import ItsSettingsTab from '../../../its/components/itsSettingsTab';
+// ITS <=
+
 export default class AppSettingsTab extends SliderSuperTab {
   private buttons: {
     edit: HTMLButtonElement,
@@ -154,6 +158,9 @@ export default class AppSettingsTab extends SliderSuperTab {
       m('data', 'DataSettings', AppDataAndStorageTab),
       m('lock', 'AccountSettings.PrivacyAndSecurity', AppPrivacyAndSecurityTab),
       m('settings', 'Telegram.GeneralSettingsViewController', AppGeneralSettingsTab),
+      // ITS => ITS SETTINGS
+      m('tools', 'ITS.Settings', ItsSettingsTab),
+      // ITS =<
       m('folder', 'AccountSettings.Filters', AppChatFoldersTab),
       m('stickers_face', 'StickersName', AppStickersAndEmojiTab)
     ];

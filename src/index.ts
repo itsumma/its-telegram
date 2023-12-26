@@ -39,6 +39,10 @@ import {nextRandomUint} from './helpers/random';
 import {IS_OVERLAY_SCROLL_SUPPORTED, USE_CUSTOM_SCROLL, USE_NATIVE_SCROLL} from './environment/overlayScrollSupport';
 // import appNavigationController from './components/appNavigationController';
 
+// ITS =>
+import {ITSSettingsChangedOptions, ITSState} from './its/managers/appITSStateManager';
+// ITS <=
+
 /* false &&  */document.addEventListener('DOMContentLoaded', async() => {
   // * Randomly choose a version if user came from google
   try {
@@ -333,6 +337,32 @@ import {IS_OVERLAY_SCROLL_SUPPORTED, USE_CUSTOM_SCROLL, USE_NATIVE_SCROLL} from 
   }
 
   console.log('got state, time:', performance.now() - perf);
+
+  // ITS => state
+  try {
+    /* const [itsStateManager] = await Promise.all([
+      import('./its/managers/appITSStateManager')
+    ]); */
+    rootScope.managers.appITSStateManager.initState()
+    .then((state: ITSState) => {
+      const isCompact = state.compactViewEnabled;
+      document.documentElement.classList.toggle('its-compact', isCompact);
+
+      const isMissedActive = state.missedTSDialogsActive;
+      document.documentElement.classList.toggle('its-missed-active', isMissedActive);
+
+      rootScope.addEventListener('its_settings_changed', (args: ITSSettingsChangedOptions) => {
+        if(args.name === 'compactViewEnabled')
+          document.documentElement.classList.toggle('its-compact', args.value);
+
+        if(args.name === 'missedTSDialogsActive')
+          document.documentElement.classList.toggle('its-missed-active', args.value);
+      });
+    });
+  } catch(e) {
+    console.error(e);
+  }
+  // ITS <=
 
   if(langPack.lang_code === 'ar' || langPack.lang_code === 'fa' && IS_BETA && false) {
     document.documentElement.classList.add('is-rtl');

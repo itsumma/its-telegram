@@ -189,7 +189,7 @@ class SortedDialogList extends SortedList<SortedDialog> {
       onElementCreate: async(base) => {
         const loadPromises: Promise<any>[] = [];
 
-        const dialogElement = appDialogsManager.addListDialog({
+        const dialogElement = await appDialogsManager.addListDialog({
           peerId: this.forumPeerId ?? base.id,
           loadPromises,
           isBatch: true,
@@ -223,7 +223,10 @@ class SortedDialogList extends SortedList<SortedDialog> {
 const avatarSizeMap: {[k in DialogElementSize]?: number} = {
   bigger: 54,
   abitbigger: 42,
-  small: 32
+  small: 32,
+  // ITS => compact view
+  its: 30
+  // ITS <=
 };
 
 export type DialogElementSize = RowMediaSizeType;
@@ -242,6 +245,14 @@ type DialogElementOptions = {
   isMainList?: boolean,
   withStories?: boolean,
   controlled?: boolean
+  // ITS => compact view
+  isChannel?: boolean;
+  isGroup?: boolean;
+  isTechsupport?: boolean;
+  isFavourite?: boolean;
+  isMissed?: boolean;
+  isPinned?: boolean;
+  // ITS <=
 };
 export class DialogElement extends Row {
   public dom: DialogDom;
@@ -261,7 +272,14 @@ export class DialogElement extends Row {
     wrapOptions = {},
     isMainList,
     withStories,
-    controlled
+    controlled,
+    // ITS => dialog props
+    isChannel = false,
+    isGroup = false,
+    isTechsupport = false,
+    isFavourite = false,
+    isMissed = false
+    // ITS <=
   }: DialogElementOptions) {
     super({
       clickable: true,
@@ -303,7 +321,10 @@ export class DialogElement extends Row {
     const avatarEl = avatar?.node;
     if(avatarEl) {
       avatarEl.classList.add('dialog-avatar');
-      this.applyMediaElement(avatarEl, avatarSize);
+      // ITS => compact view
+      this.applyMediaElementToStart(avatarEl, avatarSize);
+      // this.applyMediaElement(avatarEl, avatarSize);
+      // ITS <=
     }
 
     const captionDiv = this.container;
@@ -316,6 +337,29 @@ export class DialogElement extends Row {
     const isActive = !autonomous &&
       appImManager.chat &&
       appImManager.isSamePeer(appImManager.chat, {peerId, threadId: threadId, type: 'chat'});
+
+    // ITS => compact view
+    if(isGroup) {
+      const groupLabel = Icon('group');
+      groupLabel.classList.add('tgico-offset');
+      titleSpanContainer.append(groupLabel);
+    }
+    if(isChannel) {
+      const channelLabel = Icon('channel');
+      channelLabel.classList.add('tgico-offset');
+      titleSpanContainer.append(channelLabel);
+    }
+
+    const techsupportLabel = Icon('settings');
+    techsupportLabel.classList.add('tgico-offset', 'its-ts-icon');
+    techsupportLabel.style.display = isTechsupport ? 'block' : 'none';
+    titleSpanContainer.append(techsupportLabel);
+
+    const favouriteLabel = Icon('favourites');
+    favouriteLabel.classList.add('tgico-offset', 'its-favour-icon');
+    favouriteLabel.style.display = isFavourite ? 'block' : 'none';
+    titleSpanContainer.append(favouriteLabel);
+    // ITS <=
 
     const peerTitle = new PeerTitle();
     const peerTitlePromise = peerTitle.update({
@@ -360,6 +404,11 @@ export class DialogElement extends Row {
     } else if(avatarSize === 'small') {
       this.container.classList.add('row-small');
     }
+    // ITS => compact view
+    else if(avatarSize === 'its') {
+      this.container.classList.add('row-its')
+    }
+    // ITS <=
 
     li.dataset.peerId = '' + peerId;
     if(threadId) {
@@ -396,6 +445,14 @@ export class DialogElement extends Row {
       subtitleEl: this.subtitleRow
     };
 
+    // ITS =>
+    if(isMissed) {
+      this.dom.listEl.classList.add('its-is-missed');
+    } else {
+      this.dom.listEl.classList.remove('its-is-missed');
+    }
+    // ITS <=
+
     // this will never happen for migrated legacy chat
     if(!autonomous) {
       (li as any).dialogDom = dom;
@@ -423,7 +480,10 @@ export class DialogElement extends Row {
     if(this.dom.unreadBadge) return;
     const badge = this.dom.unreadBadge = document.createElement('div');
     badge.className = `dialog-subtitle-badge badge badge-${BADGE_SIZE}`;
-    this.dom.subtitleEl.append(badge);
+    // ITS => compact view
+    // this.dom.subtitleEl.append(badge);
+    this.dom.listEl.append(badge);
+    // ITS <=
   }
 
   public createUnreadAvatarBadge() {
@@ -438,7 +498,10 @@ export class DialogElement extends Row {
     const badge = this.dom.mentionsBadge = document.createElement('div');
     badge.className = `dialog-subtitle-badge badge badge-${BADGE_SIZE} mention mention-badge`;
     badge.innerText = '@';
-    this.dom.lastMessageSpan.after(badge);
+    // ITS => compact view
+    // this.dom.lastMessageSpan.after(badge);
+    this.dom.listEl.append(badge);
+    // ITS <=
   }
 
   public toggleBadgeByKey(
@@ -750,6 +813,9 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
   }
 
   public updateDialog(dialog: T) {
+    // ITS =>
+    this.managers.appITSManager.updateDialog(dialog as Dialog);
+    // ITS <=
     const key = this.getDialogKey(dialog);
     if(this.isDialogMustBeInViewport(dialog)) {
       if(!this.sortedList.has(key) && this.loadedDialogsAtLeastOnce) {
@@ -790,10 +856,17 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
 
       fastRafConventional(() => {
         const selector = '.chatlist-chat';
+        // ITS => compact view
+        const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
+        const saveLength = isCompact ? 60 : 38;
+        // ITS <=
         const viewportSlice = getViewportSlice({
           overflowElement: this.scrollable.container,
           selector,
-          extraMinLength: 10
+          // ITS => compact view
+          // extraMinLength: 10
+          extraMinLength: saveLength
+          // ITS <=
         });
 
         const visible = viewportSlice.visible;
@@ -878,7 +951,6 @@ class Some<T extends Dialog | ForumTopic = Dialog | ForumTopic> {
     const cachedInfoPromise = deferredPromise<boolean>();
     const renderPromise = new Promise<void>(async(resolve, reject) => {
       const chatList = this.sortedList.list;
-
       let placeholder = this.placeholder;
       try {
         const getConversationsResult = this.loadDialogsInner(side);
@@ -1223,7 +1295,13 @@ class Some3 extends Some<ForumTopic> {
 
   public async loadDialogsInner(side: SliceSides) {
     const {indexKey} = this;
-    let loadCount = windowSize.height / 64 * 1.25 | 0;
+    // ITS => compact view
+    const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
+    const chatHeight = isCompact ? 26 : 40;
+    let loadCount = windowSize.height / chatHeight * 1.25 | 0;
+    loadCount = loadCount * 2;
+    // let loadCount = windowSize.height / 64 * 1.25 | 0;
+    // ITS <=
     let offsetIndex = 0;
 
     const filterId = this.peerId;
@@ -1368,6 +1446,82 @@ class Some2 extends Some<Dialog> {
         }
       }
     });
+
+    // ITS =>
+    this.listenerSetter.add(rootScope)('its_settings_changed', async(args) => {
+      switch(args.name) {
+        case 'missedTSDialogsActive':
+          await this.managers.appITSManager.orderMissedDialogs()
+          .then(async() => {
+            // await this.loadDialogsInner('bottom');
+            await this.onChatsScroll(); // TODO - установка индикатора на табу
+          });
+          break;
+
+        case 'missedTSDialogsToTop':
+          await this.managers.appITSManager.orderMissedDialogs()
+          .then(async() => {
+            // await this.loadDialogsInner('bottom');
+            await this.onChatsScroll();
+          })
+          break;
+      }
+    });
+
+    this.listenerSetter.add(rootScope)('its_peer_pinned_event', async(args) => {
+      const _isPinned = await this.managers.dialogsStorage.isDialogPinned(args.peerId, args.filterId);
+      const dom = this.getDialogDom(args.peerId);
+      if(!dom)
+        return;
+
+      dom.listEl.classList.toggle('is-pinned', _isPinned);
+    });
+
+    this.listenerSetter.add(rootScope)('its_dialog_ts_status_changed', (dialogProps) => {
+      const dom = this.getDialogDom(dialogProps.peerId);
+      if(!dom)
+        return;
+
+      const tsIco = dom.titleSpanContainer.querySelector<HTMLElement>('span.its-ts-icon');
+      if(tsIco)
+        tsIco.style.display = dialogProps.techsupport ? 'block' : 'none';
+    });
+
+    this.listenerSetter.add(rootScope)('its_dialog_favourite_status_changed', async(dialogProps) => {
+      const dialog = await this.managers.appMessagesManager.getDialogOnly(dialogProps.peerId);
+      this.managers.dialogsStorage.saveDialog({
+        dialog: dialog,
+        folderId: undefined,
+        ignoreOffsetDate: false
+      });
+      this.updateDialog(dialog);
+
+      const dom = this.getDialogDom(dialogProps.peerId);
+      if(!dom)
+        return;
+
+      const fvIco = dom.titleSpanContainer.querySelector<HTMLElement>('span.its-favour-icon');
+      if(fvIco)
+        fvIco.style.display = dialogProps.favourite ? 'block' : 'none';
+    });
+
+    this.listenerSetter.add(rootScope)('its_dialog_missed_status_changed', async(dialogProps) => {
+      const dialog = await this.managers.appMessagesManager.getDialogOnly(dialogProps.peerId);
+      this.managers.dialogsStorage.saveDialog({dialog: dialog});
+      this.updateDialog(dialog);
+      // TODO INDICATORS
+
+      const isMissedEnabled = this.managers.appITSStateManager.getSettingFromCache('missedTSDialogsActive');
+      if(!isMissedEnabled)
+        return;
+
+      const dom = this.getDialogDom(dialog.peerId);
+      if(!dom)
+        return;
+
+      dom.listEl.classList.toggle('its-is-missed', dialogProps.missed);
+    });
+    // ITS <=
   }
 
   private get isActive() {
@@ -1380,9 +1534,14 @@ class Some2 extends Some<Dialog> {
 
   public async loadDialogsInner(side: SliceSides) {
     const {filterId, indexKey} = this;
-    let loadCount = windowSize.height / 72 * 1.25 | 0;
+    // ITS => compact view
+    const isCompact = this.managers.appITSStateManager.getSettingFromCache('compactViewEnabled');
+    const chatHeight = isCompact ? 26 : 40;
+    let loadCount = windowSize.height / chatHeight * 1.25 | 0;
+    loadCount = loadCount * 2;
+    // let loadCount = windowSize.height / 72 * 1.25 | 0;
+    // ITS <=
     let offsetIndex = 0;
-
     const doNotRenderChatList = appDialogsManager.doNotRenderChatList; // cache before awaits
 
     const {index: currentOffsetIndex} = this.getOffsetIndex(side);
@@ -2158,6 +2317,7 @@ export class AppDialogsManager {
     this.managers.appNotificationsManager.getNotifyPeerTypeSettings();
 
     await (await m(loadDialogsPromise)).renderPromise.catch(noop);
+
     this.managers.appMessagesManager.fillConversations();
   }
 
@@ -3377,6 +3537,10 @@ export class AppDialogsManager {
       badge.classList.toggle('mention', isMention);
     });
 
+    // ITS =>
+    dom.listEl.classList.toggle('is-pinned', isPinned);
+    // ITS <=
+
     if(isPinned && !isUnread && !isMention) {
       dom.unreadBadge.classList.add('badge-icon', 'dialog-pinned-icon');
       dom.unreadBadge.replaceChildren(Icon('chatspinned'));
@@ -3420,12 +3584,24 @@ export class AppDialogsManager {
     return dialog as Dialog | ForumTopic;
   }
 
-  public addListDialog(options: Parameters<AppDialogsManager['addDialogNew']>[0] & {isBatch?: boolean}) {
+  public async addListDialog(options: Parameters<AppDialogsManager['addDialogNew']>[0] & {isBatch?: boolean}) {
     options.autonomous = false;
     options.withStories = true;
-
+    // ITS => compact view
+    const [_isChannel, _isGroup, _isTechsupport, _isFavourite, _isMissed] = await Promise.all([
+      this.managers.appPeersManager.isBroadcast(options.peerId),
+      this.managers.appPeersManager.isAnyGroup(options.peerId),
+      this.managers.appITSManager.isTechsupportDialog(options.peerId),
+      this.managers.appITSManager.isFavouriteDialog(options.peerId),
+      this.managers.appITSManager.isMissedDialog(options.peerId)
+    ]);
+    options.isChannel = _isChannel;
+    options.isGroup = _isGroup;
+    options.isTechsupport = _isTechsupport;
+    options.isFavourite = _isFavourite;
+    options.isMissed = _isMissed;
+    // ITS <=
     const ret = this.addDialogNew(options);
-
     if(ret) {
       const {peerId} = options;
       const getDialogPromise = this.getDialog(peerId, options.threadId);
@@ -3492,7 +3668,10 @@ export class AppDialogsManager {
   public addDialogNew(options: DialogElementOptions & {container?: HTMLElement | Scrollable | false, append?: boolean}) {
     const d = new DialogElement({
       autonomous: !!options.container,
-      avatarSize: 'bigger',
+      // ITS => compact view
+      avatarSize: 'its',
+      // avatarSize: 'bigger',
+      // ITS <=
       ...options
       // avatarSize: !options.avatarSize || options.avatarSize >= 54 ? 'bigger' : 'abitbigger',
     });

@@ -55,7 +55,7 @@
     --transform-origin-left-center: right center;
     --transform-origin-right-center: left center;
   }
-  
+
   --pm-transition: .2s ease-in-out;
   --layer-transition: .2s cubic-bezier(.4, .0, .2, 1);
   --slide-header-transition: .4s ease-in-out;
@@ -1620,7 +1620,7 @@ hr {
   font-size: var(--esg-emoji-size);
   line-height: var(--esg-emoji-size);
   column-gap: .25rem;
-  
+
   .custom-emoji {
     display: block;
 
@@ -2376,3 +2376,8 @@ hr {
     inset: -8px 1rem auto auto !important;
   }
 }
+
+
+// ITS => base view improvements
+@import "../its/styles";
+// ITS <=

@@ -73,6 +73,13 @@ import wrapEmojiStatus from '../wrappers/emojiStatus';
 import {makeMediaSize} from '../../helpers/mediaSize';
 import ReactionElement from '../chat/reaction';
 
+// ITS =>
+import ItsSettingsCheckBox from '../../its/components/itsSettingsCheckBox';
+import {ITSSettingsChangedOptions} from '../../its/managers/appITSStateManager';
+import ItsGearMenu from '../../its/components/itsGearMenu';
+// ITS <=
+
+
 export const LEFT_COLUMN_ACTIVE_CLASSNAME = 'is-left-column-shown';
 
 export class AppSidebarLeft extends SidebarSlider {
@@ -91,6 +98,10 @@ export class AppSidebarLeft extends SidebarSlider {
   private updateBtn: HTMLElement;
   private hasUpdate: boolean;
 
+  // ITS =>
+  private gearMenu: ItsGearMenu;
+  // ITS <=
+
   constructor() {
     super({
       sidebarEl: document.getElementById('column-left') as HTMLDivElement,
@@ -106,6 +117,11 @@ export class AppSidebarLeft extends SidebarSlider {
     (this.inputSearch.input as HTMLInputElement).placeholder = ' ';
     const sidebarHeader = this.sidebarEl.querySelector('.item-main .sidebar-header');
     sidebarHeader.append(this.inputSearch.container);
+
+    // ITS =>
+    this.gearMenu = new ItsGearMenu();
+    sidebarHeader.append(this.gearMenu.container);
+    // ITS <=
 
     const onNewGroupClick = () => {
       this.createTab(AppAddMembersTab).open({
@@ -154,6 +170,38 @@ export class AppSidebarLeft extends SidebarSlider {
     rootScope.addEventListener('theme_changed', () => {
       themeCheckboxField.setValueSilently(themeController.getTheme().name === 'night');
     });
+
+    // ITS =>
+    // compact view
+    const compactViewField = new ItsSettingsCheckBox({
+      toggle: true,
+      settingsKey: 'compactViewEnabled'
+    }) as CheckboxField;
+
+    const missedTSEnabledField = new ItsSettingsCheckBox({
+      toggle: true,
+      settingsKey: 'missedTSDialogsActive'
+    }) as CheckboxField;
+
+    const missedTSDialogsToTopField = new ItsSettingsCheckBox({
+      toggle: true,
+      settingsKey: 'missedTSDialogsToTop'
+    }) as CheckboxField;
+
+    rootScope.addEventListener('its_settings_changed', (args : ITSSettingsChangedOptions) => {
+      if(args.name === 'compactViewEnabled') {
+        compactViewField.setValueSilently(args.value);
+      }
+
+      if(args.name === 'missedTSDialogsActive') {
+        missedTSEnabledField.setValueSilently(args.value);
+      }
+
+      if(args.name === 'missedTSDialogsToTop') {
+        missedTSDialogsToTopField.setValueSilently(args.value);
+      }
+    });
+    // ITS <=
 
     const menuButtons: (ButtonMenuItemOptions & {verify?: () => boolean | Promise<boolean>})[] = [{
       icon: 'savedmessages',
@@ -215,13 +263,37 @@ export class AppSidebarLeft extends SidebarSlider {
         this.createTab(AppPowerSavingTab).open();
       },
       verify: () => liteMode.isEnabled()
-    }, {
+    },
+    // ITS =>
+    {
+      icon: 'eye1',
+      text: 'ITS.CompactView',
+      onClick: () => {},
+      checkboxField: compactViewField
+    },
+    {
+      icon: 'eye1',
+      text: 'ITS.MissedTSDialogsEnabled',
+      onClick: () => {},
+      checkboxField: missedTSEnabledField
+    },
+    {
+      icon: 'eye1',
+      text: 'ITS.MissedToTop',
+      onClick: () => {},
+      checkboxField: missedTSDialogsToTopField
+    },
+    // ITS <=
+    {
       icon: 'help',
       text: 'TelegramFeatures',
       onClick: () => {
         const url = I18n.format('TelegramFeaturesUrl', true);
         appImManager.openUrl(url);
-      }
+      },
+      // ITS => compact view
+      verify: () => false
+      // ITS <=
     }, {
       icon: 'bug',
       text: 'ReportBug',
@@ -234,7 +306,10 @@ export class AppSidebarLeft extends SidebarSlider {
         setTimeout(() => {
           a.remove();
         }, 0);
-      }
+      },
+      // ITS => compact view
+      verify: () => false
+      // ITS <=
     }, {
       icon: 'char' as Icon,
       className: 'a',
@@ -247,7 +322,10 @@ export class AppSidebarLeft extends SidebarSlider {
           location.href = 'https://web.telegram.org/a/';
         });
       },
-      verify: () => App.isMainDomain
+      // ITS =>
+      // verify: () => App.isMainDomain
+      verify: () => false
+      // ITS <=
     }, /* {
       icon: 'char w',
       text: 'ChatList.Menu.SwitchTo.Webogram',
@@ -264,7 +342,10 @@ export class AppSidebarLeft extends SidebarSlider {
         const installPrompt = getInstallPrompt();
         installPrompt?.();
       },
-      verify: () => !!getInstallPrompt()
+      // ITS =>
+      // verify: () => !!getInstallPrompt()
+      verify: () => false
+      // ITS <=
     }];
 
     const filteredButtons = menuButtons.filter(Boolean);
@@ -301,7 +382,10 @@ export class AppSidebarLeft extends SidebarSlider {
       },
       onOpen: (e, btnMenu) => {
         const btnMenuFooter = document.createElement('a');
-        btnMenuFooter.href = 'https://github.com/morethanwords/tweb/blob/master/CHANGELOG.md';
+        // ITS =>
+        // btnMenuFooter.href = 'https://github.com/morethanwords/tweb/blob/master/CHANGELOG.md';
+        btnMenuFooter.href = 'https://youtu.be/JpxxqFeF-G0';
+        // ITS <=
         btnMenuFooter.target = '_blank';
         btnMenuFooter.rel = 'noopener noreferrer';
         btnMenuFooter.classList.add('btn-menu-footer');
@@ -311,7 +395,10 @@ export class AppSidebarLeft extends SidebarSlider {
         });
         const t = document.createElement('span');
         t.classList.add('btn-menu-footer-text');
-        t.textContent = 'Telegram Web' + App.suffix + ' '/* ' alpha ' */ + App.versionFull;
+        // ITS =>
+        // t.textContent = 'Telegram Web' + App.suffix + ' '/* ' alpha ' */ + App.versionFull;
+        t.textContent = 'Мэйк Телега грейт эгейн. vol 2. Атака клонов';
+        // ITS <=
         btnMenuFooter.append(t);
         btnMenu.classList.add('has-footer');
         btnMenu.append(btnMenuFooter);
@@ -570,6 +657,8 @@ export class AppSidebarLeft extends SidebarSlider {
         return;
       }
 
+      // ITS => skip update
+      /*
       const CHECK_UPDATE_INTERVAL = 1800e3;
       const checkUpdateInterval = setInterval(() => {
         fetch('version', {cache: 'no-cache'})
@@ -586,6 +675,8 @@ export class AppSidebarLeft extends SidebarSlider {
         })
         .catch(noop);
       }, CHECK_UPDATE_INTERVAL);
+      */
+      // ITS <=
     });
 
     const onResize = () => {
@@ -852,7 +943,9 @@ export class AppSidebarLeft extends SidebarSlider {
           hideNewBtnMenuTimeout = window.setTimeout(() => {
             hideNewBtnMenuTimeout = 0;
             this.newBtnMenu.classList.remove('is-hidden');
-            this.hasUpdate && this.updateBtn.classList.remove('is-hidden');
+            // ITS => skip updates
+            // this.hasUpdate && this.updateBtn.classList.remove('is-hidden');
+            // ITS <=
           }, 150);
         }
 
@@ -867,7 +960,9 @@ export class AppSidebarLeft extends SidebarSlider {
       this.toolsBtn.classList.remove(activeClassName);
       this.backBtn.classList.add(activeClassName);
       this.newBtnMenu.classList.add('is-hidden');
-      this.updateBtn.classList.add('is-hidden');
+      // ITS => skip updates
+      // this.updateBtn.classList.add('is-hidden');
+      // ITS <=
       this.toolsBtn.parentElement.firstElementChild.classList.toggle('state-back', true);
 
       const navigationType: NavigationItem['type'] = 'global-search';

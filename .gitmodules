@@ -11,3 +11,6 @@
 	path = src/solid
 	url = https://github.com/morethanwords/solid
   branch = no-errors
+[submodule "src/its"]
+	path = src/its
+	url = git@github.com:itsumma/its-telegram-utils.git

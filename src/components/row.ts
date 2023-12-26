@@ -32,7 +32,10 @@ const setContent = (element: HTMLElement, content: K) => {
   }
 };
 
-export type RowMediaSizeType = 'small' | 'medium' | 'big' | 'abitbigger' | 'bigger';
+// ITS => compact view
+// export type RowMediaSizeType = 'small' | 'medium' | 'big' | 'abitbigger' | 'bigger';
+export type RowMediaSizeType = 'small' | 'medium' | 'big' | 'abitbigger' | 'bigger' | 'its' | 'itscompact';
+// ITS <=
 
 type ConstructorP<T> = T extends {
   new (...args: any[]): infer U;
@@ -356,6 +359,22 @@ export default class Row<T extends SliderSuperTabEventableConstructable = any> {
 
     return media;
   }
+
+  // ITS => compact view
+  public applyMediaElementToStart(media: HTMLElement, size?: RowMediaSizeType) {
+    this.container.classList.add('row-with-padding');
+
+    this.media = media;
+    media.classList.add('row-media');
+
+    if(size) {
+      media.classList.add('row-media-' + size);
+    }
+    this.container.prepend(media);
+
+    return media;
+  }
+  // ITS <=
 
   public isDisabled() {
     return this.container.classList.contains('is-disabled');

@@ -53,6 +53,10 @@ import type AppBotsManager from './appBotsManager';
 import type AppBoostsManager from './appBoostsManager';
 import type AppStatisticsManager from './appStatisticsManager';
 import type {AppManagers} from './managers';
+// ITS =>
+import type AppITSManager from '../../its/managers/appITSManager';
+import type AppITSStateManager from '../../its/managers/appITSStateManager';
+// ITS <=
 
 export class AppManager {
   protected appPeersManager: AppPeersManager;
@@ -104,6 +108,11 @@ export class AppManager {
   protected appBotsManager: AppBotsManager;
   protected appBoostsManager: AppBoostsManager;
   protected appStatisticsManager: AppStatisticsManager;
+
+  // ITS =>
+  protected appITSManager: AppITSManager;
+  protected appITSStateManager: AppITSStateManager;
+  // ITS <=
 
   public clear: (init?: boolean) => void;
 

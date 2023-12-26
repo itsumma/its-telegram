@@ -14,7 +14,10 @@ const rootDir = resolve(__dirname);
 
 const handlebarsPlugin = handlebars({
   context: {
-    title: 'Telegram Web',
+    // ITS =>
+    // title: 'Telegram Web',
+    title: 'ITSTelegram client v3.1.1',
+    // ITS <=
     description: 'Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed.',
     url: 'https://web.telegram.org/k/',
     origin: 'https://web.telegram.org/'
@@ -24,7 +27,7 @@ const handlebarsPlugin = handlebars({
 const serverOptions: ServerOptions = {
   https: false,
   // host: '192.168.92.78',
-  port: 8080
+  port: 9092
 };
 
 const NO_MINIFY = false;
@@ -56,6 +59,14 @@ export default defineConfig({
   test: {
     // include: ['**/*.{test,spec}.?(c|m)[jt]s?(x)'],
     exclude: [
+      // ITS =>
+      'desktop/**',
+      'desktop/bundle/**',
+      '**/Dockerfile',
+      '**/docker-compose.yaml',
+      '**/nginx.docker.conf',
+      '**/patches/**',
+      // ITS <=
       '**/node_modules/**',
       '**/dist/**',
       '**/cypress/**',
@@ -84,6 +95,9 @@ export default defineConfig({
   base: '',
   build: {
     target: 'es2020',
+    // ITS =>
+    chunkSizeWarningLimit: 2000,
+    // ITS <=
     sourcemap: true,
     assetsDir: '',
     copyPublicDir: false,

@@ -3142,7 +3142,10 @@ export default class ChatInput {
     this.onMessageSent2?.();
   }
 
-  public sendMessage(force = false) {
+  // ITS =>
+  public async sendMessage(force = false) {
+  // public sendMessage(force = false) {
+  // ITS <=
     const {editMsgId, chat} = this;
     if(chat.type === 'scheduled' && !force && !editMsgId) {
       this.scheduleSending();
@@ -3153,8 +3156,34 @@ export default class ChatInput {
     const {noWebPage} = this;
     const sendingParams = this.chat.getMessageSendingParams();
 
-    const {value, entities} = getRichValueWithCaret(this.messageInputField.input, true, false);
+    // ITS =>
+    // const {value, entities} = getRichValueWithCaret(this.messageInputField.input, true, false);
+    let {value, entities} = getRichValueWithCaret(this.messageInputField.input, true, false);
+    if(!editMsgId && this.forwarding) {
+      const forwarding = copy(this.forwarding);
+      for(const fromPeerId in forwarding) {
+        const isTechsupport = await this.managers.appITSManager.isTechsupportDialog(fromPeerId.toPeerId());
+        if(isTechsupport) {
+          const dialogTitle = await this.managers.appITSManager.getDialogName(fromPeerId.toPeerId());
+          const tsMarkTag = `Forwarded from: ${dialogTitle}`;
+          const tsMarkTagLength = tsMarkTag.length;
+          value = `${tsMarkTag}\n${value}`;
 
+          for(const entity of entities) {
+            entity.offset += (tsMarkTagLength + 1);
+          }
+          entities = [
+            {
+              _: 'messageEntityItalic',
+              offset: 0,
+              length: tsMarkTagLength
+            },
+            ...entities
+          ]
+        }
+      }
+    }
+    // ITS <=
     // return;
     if(editMsgId) {
       const message = this.editMessage;

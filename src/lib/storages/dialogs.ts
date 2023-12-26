@@ -35,7 +35,7 @@ import defineNotNumerableProperties from '../../helpers/object/defineNotNumerabl
 import setDialogIndex from '../appManagers/utils/dialogs/setDialogIndex';
 import deferredPromise, {CancellablePromise} from '../../helpers/cancellablePromise';
 import pause from '../../helpers/schedulers/pause';
-import {BroadcastEvents} from '../rootScope';
+import rootScope, {BroadcastEvents} from '../rootScope';
 import assumeType from '../../helpers/assumeType';
 import makeError from '../../helpers/makeError';
 import callbackify from '../../helpers/callbackify';
@@ -173,7 +173,7 @@ export default class DialogsStorage extends AppManager {
     return Promise.all([
       this.appStateManager.getState(),
       this.appStoragesManager.loadStorage('dialogs')
-    ]).then(([state, {results: dialogs, storage}]) => {
+    ]).then(async([state, {results: dialogs, storage}]) => {
       this.storage = storage;
       this.dialogs = this.storage.getCache();
 
@@ -186,6 +186,11 @@ export default class DialogsStorage extends AppManager {
         const _order = this.getPinnedOrders(folderId);
         _order.splice(0, _order.length, ...order);
       }
+
+      // ITS => dialog props
+      await this.appITSStateManager.initState();
+      await this.appITSManager.initDialogs(dialogs);
+      // ITS <=
 
       if(dialogs.length) {
         AppStorage.freezeSaving<typeof DATABASE_STATE>(this.setDialogsFromState.bind(this, dialogs), ['chats', 'dialogs', 'messages', 'users']);
@@ -551,6 +556,26 @@ export default class DialogsStorage extends AppManager {
     return (date * 0x10000) + (isPinned ? 0 : (++this.dialogsNum & 0xFFFF));
   }
 
+  // ITS =>
+  public generateFavouriteDialogIndex(peerId: PeerId) {
+    return (0x7ffe0000 * 0x10000) + (peerId & 0x0000FFFF) // ? через peerId или topDate
+  }
+
+  public isFavoriteDialog(dialog: Dialog, indexKey : any) {
+    const index = getDialogIndex(dialog, indexKey);
+    return ((index - (dialog.peerId & 0x0000FFFF)) / 0x10000) == 0x7ffe0000
+  }
+
+  public generateMissedDialogIndex(peerId: PeerId) {
+    return (0x7ffd0000 * 0x10000) + (peerId & 0x0000FFFF) // ? через peerId или topDate
+  }
+
+  public isMissedDialog(dialog: Dialog, indexKey: any) {
+    const index = getDialogIndex(dialog, indexKey);
+    return ((index - (dialog.peerId & 0x0000FFFF)) / 0x10000) == 0x7ffd0000
+  }
+  // ITS <=
+
   // public makeFilterForTopics(id: number): MyDialogFilter {
   //   return {
   //     _: 'dialogFilter',
@@ -747,7 +772,10 @@ export default class DialogsStorage extends AppManager {
     dialog: Dialog | ForumTopic,
     justReturn?: boolean,
     message?: MyMessage,
-    noPinnedOrderUpdate?: boolean
+    noPinnedOrderUpdate?: boolean,
+    // ITS =>
+    resetIndex: boolean = false
+    // ITS <=
   ) {
     if(!justReturn/*  && !isTopic */) {
       return;
@@ -777,17 +805,73 @@ export default class DialogsStorage extends AppManager {
         }
       }
 
-      if(
-        dialog.draft?._ === 'draftMessage' &&
-        dialog.draft.date > topDate
-      ) {
-        topDate = dialog.draft.date;
-      }
+      // ITS =>
+      // if(
+      //   dialog.draft?._ === 'draftMessage' &&
+      //   dialog.draft.date > topDate
+      // ) {
+      //  topDate = dialog.draft.date;
+      // }
+      // ITS <=
     }
 
     topDate ||= tsNow(true);
 
-    const index = this.generateDialogIndex(topDate, isPinned);
+    // ITS =>
+    // const index = this.generateDialogIndex(topDate, isPinned);
+    let index = this.generateDialogIndex(topDate, isPinned);
+    if(!isPinned && !resetIndex) {
+      let sorted = false;
+
+      // FAVOURITES
+      if(this.appITSManager.isFavouriteDialog(dialog.peerId)) {
+        index = this.generateFavouriteDialogIndex(dialog.peerId);
+        sorted = true;
+      }
+
+      // MISSED
+      if(!sorted &&
+        this.appITSStateManager.getSettingFromCache('missedTSDialogsActive') &&
+        this.appITSStateManager.getSettingFromCache('missedTSDialogsToTop') &&
+        this.appITSManager.isMissedDialog(dialog.peerId)
+      ) {
+        index = this.generateMissedDialogIndex(dialog.peerId);
+        sorted = true;
+      }
+
+      const dialogsRotateInterval = this.appITSStateManager.getSettingFromCache('dialogsRotateInterval', false);
+      if(
+        // !justReturn &&
+        !sorted &&
+        !dialog.peerId.isUser() &&
+        message &&
+        (dialog as Dialog).topMessage &&
+        dialogsRotateInterval) {
+        const our = message.fromId === rootScope.myId || (!!message.pFlags.out && this.appPeersManager.isMegagroup(dialog.peerId));
+        const isOut = our && (!(message as Message.message).fwd_from || message.fromId !== rootScope.myId);
+        const topMessageTimestamp = (dialog as Dialog).topMessage.date;
+        const __tsNov = tsNow();
+        const timestampConditionStatement = Number(__tsNov - topMessageTimestamp * 1000) < dialogsRotateInterval;
+
+        if(!isOut && timestampConditionStatement) {
+          const indexKey = getDialogIndexKey((dialog as Dialog).folder_id);
+          const __index = getDialogIndex(dialog, indexKey);
+          if(__index)
+            index = __index;
+
+          // reset missed index
+          if(this.isMissedDialog(dialog as Dialog, indexKey) && !this.appITSManager.isMissedDialog(dialog.peerId)) {
+            index = this.generateDialogIndex(topDate, isPinned);
+          }
+
+          // reset favourite index
+          if(this.isFavoriteDialog(dialog as Dialog, indexKey) && !this.appITSManager.isFavouriteDialog(dialog.peerId)) {
+            index = this.generateDialogIndex(topDate, isPinned);
+          }
+        }
+      }
+    }
+    // ITS <=
     if(justReturn) {
       return index;
     }

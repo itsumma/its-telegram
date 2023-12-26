@@ -24,6 +24,10 @@ import IS_SHARED_WORKER_SUPPORTED from '../environment/sharedWorkerSupport';
 import wrapEmojiText from '../lib/richTextProcessor/wrapEmojiText';
 import appImManager from '../lib/appManagers/appImManager';
 
+// ITS =>
+import appITSManager from '../its/managers/appITSManager';
+// ITS <=
+
 export default class DialogsContextMenu {
   private buttons: ButtonMenuItemOptionsVerifiable[];
 
@@ -71,7 +75,7 @@ export default class DialogsContextMenu {
   }
 
   private getButtons() {
-    return this.buttons ??= [{
+    /* ITS =>  {
       icon: 'newtab',
       text: 'OpenInNewTab',
       onClick: (e) => {
@@ -79,6 +83,33 @@ export default class DialogsContextMenu {
         cancelEvent(e);
       },
       verify: () => IS_SHARED_WORKER_SUPPORTED
+    }, ITS <= */
+    return this.buttons ??= [{
+      // ITS =>
+      icon: 'settings',
+      text: 'ITS.IsOk',
+      onClick: () => this.managers.appITSManager.resetMissedStatus(this.dialog.peerId),
+      verify: async() => {
+        const [_isTechsupport, _isMissed] = await Promise.all([
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId),
+          this.managers.appITSManager.isMissedDialog(this.dialog.peerId)
+        ]);
+        return _isTechsupport && _isMissed;
+      }
+      // ITS <=
+    }, {
+      // ITS =>
+      icon: 'settings',
+      text: 'ITS.SetMissed',
+      onClick: () => this.managers.appITSManager.setMissedStatus(this.dialog.peerId, true),
+      verify: async() => {
+        const [_isTechsupport, _isMissed] = await Promise.all([
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId),
+          this.managers.appITSManager.isMissedDialog(this.dialog.peerId)
+        ]);
+        return _isTechsupport && !_isMissed;
+      }
+      // ITS <=
     }, {
       icon: 'topics',
       text: 'TopicViewAsTopics',
@@ -124,7 +155,32 @@ export default class DialogsContextMenu {
           !!this.dialog.pFlags?.pinned;
         return isPinned;
       }
-    }, {
+    },
+    // ITS => favourites
+    {
+      icon: 'flag',
+      text: 'ITS.SetFavourite',
+      onClick: () => {
+        this.managers.appITSManager.setFavoriteStatus(this.dialog.peerId, true);
+      },
+      verify: async() => {
+        const _isFavourite = await this.managers.appITSManager.isFavouriteDialog(this.dialog.peerId);
+        return !_isFavourite;
+      }
+    },
+    {
+      icon: 'flag',
+      text: 'ITS.UnsetFavourite',
+      onClick: () => {
+        this.managers.appITSManager.setFavoriteStatus(this.dialog.peerId, false);
+      },
+      verify: async() => {
+        const _isFavourite = await this.managers.appITSManager.isFavouriteDialog(this.dialog.peerId);
+        return _isFavourite;
+      }
+    },
+    // ITS <=
+    {
       icon: 'mute',
       text: 'ChatList.Context.Mute',
       onClick: this.onMuteClick,
@@ -148,7 +204,38 @@ export default class DialogsContextMenu {
       text: 'Unarchive',
       onClick: this.onArchiveClick,
       verify: () => this.filterId === FOLDER_ID_ARCHIVE && this.peerId !== rootScope.myId
-    }, {
+    },
+    // ITS => techsupport
+    {
+      icon: 'settings',
+      text: 'ITS.SetTechsupport',
+      onClick: () => {
+        this.managers.appITSManager.setTechsupportStatus(this.dialog.peerId, true)
+      },
+      verify: async() => {
+        const [isAnyGroup, isTechsupport] = await Promise.all([
+          this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId)
+        ]);
+        return isAnyGroup && !isTechsupport;
+      }
+    },
+    {
+      icon: 'settings',
+      text: 'ITS.UnsetTechsupport',
+      onClick: () => {
+        this.managers.appITSManager.setTechsupportStatus(this.dialog.peerId, false)
+      },
+      verify: async() => {
+        const [isAnyGroup, isTechsupport] = await Promise.all([
+          this.managers.appPeersManager.isAnyGroup(this.dialog.peerId),
+          this.managers.appITSManager.isTechsupportDialog(this.dialog.peerId)
+        ]);
+        return isAnyGroup && isTechsupport;
+      }
+    },
+    // ITS <=
+    {
       icon: 'hide',
       text: 'Hide',
       onClick: this.onHideTopicClick,
@@ -236,7 +323,13 @@ export default class DialogsContextMenu {
       peerId,
       filterId,
       topicId: threadId
-    }).catch(async(err: ApiError) => {
+    })
+    // ITS =>
+    .then(() => {
+      rootScope.dispatchEvent('its_peer_pinned_event', {peerId: peerId, filterId: filterId});
+    })
+    // ITS <=
+    .catch(async(err: ApiError) => {
       if(err.type === 'PINNED_DIALOGS_TOO_MUCH' || err.type === 'PINNED_TOO_MUCH') {
         if(threadId) {
           this.managers.apiManager.getLimit('topicPin').then((limit) => {

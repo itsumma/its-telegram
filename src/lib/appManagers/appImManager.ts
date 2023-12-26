@@ -117,6 +117,11 @@ import {RequestWebViewOptions} from './appAttachMenuBotsManager';
 import PopupWebApp from '../../components/popups/webApp';
 import {getPeerColorIndexByPeer, getPeerColorsByPeer, setPeerColors} from './utils/peers/getPeerColorById';
 
+// ITS =>
+import isSelectionEmpty from '../../helpers/dom/isSelectionEmpty';
+import {copyTextToClipboard} from '../../helpers/clipboard';
+// ITS <=
+
 export type ChatSavedPosition = {
   mids: number[],
   top: number
@@ -1047,7 +1052,10 @@ export class AppImManager extends EventListenerBase<{
 
   private attachKeydownListener() {
     const IGNORE_KEYS = new Set(['PageUp', 'PageDown', 'Meta', 'Control']);
-    const onKeyDown = (e: KeyboardEvent) => {
+    // ITS =>
+    const onKeyDown = async(e: KeyboardEvent) => {
+    // const onKeyDown = (e: KeyboardEvent) => {
+    // ITS <=
       const key = e.key;
       const isSelectionCollapsed = document.getSelection().isCollapsed;
       if(overlayCounter.isOverlayActive || IGNORE_KEYS.has(key)) return;
@@ -1065,6 +1073,21 @@ export class AppImManager extends EventListenerBase<{
       if((key.startsWith('Arrow') || (e.shiftKey && key === 'Shift')) && !isSelectionCollapsed) {
         return;
       } else if(e.code === 'KeyC' && (e.ctrlKey || e.metaKey) && !isTargetAnInput) {
+        // ITS =>
+        if(isSelectionEmpty() && this.chat.selection) {
+          let mids: number[];
+          if(!this.chat.selection.isSelecting) {
+            mids = [];
+          } else {
+            mids = this.chat.selection.getSelectedMids();
+          }
+          const messages = await Promise.all(mids.map(async(mid) => {
+            return (await this.chat.getMessage(mid)) as Message.message;
+          }));
+          const strToCopy = await this.managers.appITSManager.generateCopyBody(messages);
+          copyTextToClipboard(strToCopy);
+        }
+        // ITS <=
         return;
       } else if(e.altKey && (key === 'ArrowUp' || key === 'ArrowDown')) {
         cancelEvent(e);
@@ -2463,7 +2486,10 @@ export class AppImManager extends EventListenerBase<{
     });
   }
 
-  public setPeerColorToElement(
+  // ITS =>
+  // public setPeerColorToElement(
+  public async setPeerColorToElement(
+  // ITS <=
     peerId: PeerId,
     element: HTMLElement,
     messageHighlighting?: boolean,
@@ -2496,6 +2522,12 @@ export class AppImManager extends EventListenerBase<{
       peerColorRgbValue = `var(--peer-${colorIndex}-color-rgb)`;
       peerBorderBackgroundValue = `var(--peer-${colorIndex}-border-background)`;
     }
+
+    // ITS =>
+    const isAdmin = await this.managers.appITSManager.userIsAdmin(peerId);
+    if(isAdmin)
+      peerColorRgbValue = peerColorRgbValue = `var(--peer-0-color-rgb)`;
+    // ITS <=
 
     element.style.setProperty(colorProperty, peerColorRgbValue);
     element.style.setProperty(borderBackgroundProperty, peerBorderBackgroundValue);
