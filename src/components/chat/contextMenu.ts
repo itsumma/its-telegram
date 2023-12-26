@@ -1087,6 +1087,7 @@ export default class ChatContextMenu {
         mids = this.chat.selection.getSelectedMids();
       }
       const messages = await Promise.all(mids.map(async(mid) => {
+        // eslint-disable-next-line @typescript-eslint/await-thenable
         return (await this.chat.getMessage(mid)) as Message.message;
       }))
       const strToCopy = await this.managers.appITSManager.generateCopyBody(messages);
