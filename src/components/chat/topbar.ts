@@ -158,7 +158,7 @@ export default class ChatTopbar {
 
     // ITS =>
     this.itsLinks = document.createElement('div');
-    // this.itsLinks.style.display = 'none';
+    this.itsLinks.style.display = 'none';
     this.itsLinks.classList.add('its-topbar-links');
 
     ['WC', 'CP', '24mon'].forEach(_type => {
@@ -166,7 +166,6 @@ export default class ChatTopbar {
       link.setAttribute('target', '_blank');
       link.setAttribute('rel', 'noopener noreferrer');
       link.setAttribute('data-its-link-type', _type);
-      link.setAttribute('href', 'https://irk.ru');
       link.innerHTML = _type;
       link.classList.add('its-topbar-link', 'anchor-url');
       this.itsLinks.append(link);

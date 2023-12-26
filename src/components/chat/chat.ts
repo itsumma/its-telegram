@@ -41,6 +41,10 @@ import {getColorsFromWallPaper} from '../../helpers/color';
 import apiManagerProxy from '../../lib/mtproto/mtprotoworker';
 import deferredPromise, {CancellablePromise} from '../../helpers/cancellablePromise';
 
+// ITS =>
+import appITSDialogsUtilsManager from '../../its/managers/appITSDialogsUtilsManager';
+// ITS <=
+
 export type ChatType = 'chat' | 'pinned' | 'discussion' | 'scheduled' | 'stories';
 
 export default class Chat extends EventListenerBase<{
@@ -641,7 +645,9 @@ export default class Chat extends EventListenerBase<{
     if(this.container) {
       this.container.dataset.type = this.type;
     }
-
+    // ITS =>
+    appITSDialogsUtilsManager.dispatchEvent('its_peer_changed', {peerId: peerId});
+    // ITS <=
     this.log.setPrefix('CHAT-' + peerId + '-' + this.type);
 
     if(this.isMainChat) {
