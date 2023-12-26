@@ -97,6 +97,10 @@ export default class ChatTopbar {
 
   private titleMiddlewareHelper: MiddlewareHelper;
 
+  // ITS => mon-cp-wc
+  public itsLinks: HTMLDivElement;
+  // ITS <=
+
   constructor(
     private chat: Chat,
     public appSidebarRight: AppSidebarRight,
@@ -151,6 +155,25 @@ export default class ChatTopbar {
     content.append(top, bottom);
 
     person.append(content);
+
+    // ITS =>
+    this.itsLinks = document.createElement('div');
+    // this.itsLinks.style.display = 'none';
+    this.itsLinks.classList.add('its-topbar-links');
+
+    ['WC', 'CP', '24mon'].forEach(_type => {
+      const link = document.createElement('a');
+      link.setAttribute('target', '_blank');
+      link.setAttribute('rel', 'noopener noreferrer');
+      link.setAttribute('data-its-link-type', _type);
+      link.setAttribute('href', 'https://irk.ru');
+      link.innerHTML = _type;
+      link.classList.add('its-topbar-link', 'anchor-url');
+      this.itsLinks.append(link);
+    });
+    person.append(this.itsLinks);
+    // ITS <=
+
     this.chatInfo.append(person);
 
     // * chat utils section
@@ -219,6 +242,11 @@ export default class ChatTopbar {
     this.listenerSetter.add(mediaSizes)('changeScreen', this.onChangeScreen);
 
     attachClickEvent(this.container, (e) => {
+      // ITS => win-cp-mon-links
+      const itsLinksContainer : HTMLElement = findUpClassName(e.target, 'its-topbar-links');
+      if(itsLinksContainer)
+        return;
+      // ITS <=
       const container = findUpClassName(e.target, 'pinned-container');
       blurActiveElement();
       if(container) {
