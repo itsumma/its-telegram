@@ -109,6 +109,10 @@ import Icon from '../../components/icon';
 import setBadgeContent from '../../helpers/setBadgeContent';
 import createBadge from '../../helpers/createBadge';
 
+// ITS =>
+import {itsTabsMenu} from '../../its/components/itsTabs';
+// ITS <=
+
 export const DIALOG_LIST_ELEMENT_TAG = 'A';
 
 export type DialogDom = {
@@ -1847,6 +1851,9 @@ export class AppDialogsManager {
 
     const bottomPart = this.bottomPart = document.createElement('div');
     bottomPart.classList.add('connection-status-bottom');
+    // ITS => tabs to left
+    bottomPart.classList.add('__its_left-side_override');
+    // ITS <=
     bottomPart.append(this.folders.container);
 
     const storiesListContainer = this.storiesListContainer = document.createElement('div');
@@ -1920,13 +1927,16 @@ export class AppDialogsManager {
       localId: FOLDER_ID_ALL
     });
 
-    const foldersScrollable = new ScrollableX(this.folders.menuScrollContainer);
+    // ITS =>
+    // const foldersScrollable = new ScrollableX(this.folders.menuScrollContainer);
+    const foldersScrollable = new Scrollable(this.folders.menuScrollContainer);
+    // ITS <=
     bottomPart.prepend(this.folders.menuScrollContainer);
-    const selectTab = this.selectTab = horizontalMenu(this.folders.menu, this.folders.container, async(id, tabContent) => {
-      /* if(id !== 0) {
-        id += 1;
-      } */
 
+    // ITS =>
+    // const selectTab = this.selectTab = horizontalMenu(this.folders.menu, this.folders.container, async(id, tabContent) => {
+    const selectTab = this.selectTab = itsTabsMenu(this.folders.menu, this.folders.container, async(id, tabContent) => {
+    // ITS <=
       const _id = id;
       id = +tabContent.dataset.filterId || FOLDER_ID_ALL;
 
@@ -1975,6 +1985,7 @@ export class AppDialogsManager {
         }
       }
     }, undefined, foldersScrollable);
+
 
     let clickFilterId: number;
     createContextMenu({
