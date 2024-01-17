@@ -579,6 +579,9 @@ export default class ChatTopbar {
     }];
 
     this.btnSearch = ButtonIcon('search');
+    // ITS =>
+    this.btnSearch.classList.add('__its_search_helper');
+    // ITS <=
     this.attachClickEvent(this.btnSearch, (e) => {
       this.chat.initSearch();
     }, true);
